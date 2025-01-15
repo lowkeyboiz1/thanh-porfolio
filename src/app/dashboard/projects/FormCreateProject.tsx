@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Loader2, CheckCircle2 } from 'lucide-react'
 import { ProjectItem } from '@/components/Projects'
+import { apiRequest } from '@/lib/api'
 
 export default function FormCreateProject() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -41,15 +42,15 @@ export default function FormCreateProject() {
     if (!validateForm()) return
 
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false)
+    try {
+      await apiRequest('/api/create-new-project', 'POST', formState)
+      setIsSubmitted(true)
       setFormState({ title: '', description: '', url: '' })
-    }, 3000)
+    } catch (error) {
+      console.error('Error submitting form:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
