@@ -1,12 +1,16 @@
 'use client'
+
 import { ProjectItem } from '@/components/Projects'
 import { ProjectItemProps } from '@/components/Projects/ProjectItem'
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
-import { useState } from 'react'
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import { useState, useEffect } from 'react'
+import { useGetAllQueryParams } from '@/hooks/useGetAllQueryParams'
+import { useRouter } from 'next/navigation'
 
-import { useRouter, useSearchParams } from 'next/navigation'
 const ProjectsPage = () => {
   const router = useRouter()
+
+  // Initial Project Data
   const initProjects: ProjectItemProps[] = [
     {
       title: 'Project 1',
@@ -25,31 +29,42 @@ const ProjectsPage = () => {
     }
   ]
 
-  const searchParams = useSearchParams()
-  const page = searchParams.get('page')
+  // Query Params
+  //   const queryParams = useGetAllQueryParams()
+  const pageFromQuery = 1
 
+  // State Management
   const [projects, setProjects] = useState<ProjectItemProps[]>([...initProjects, ...initProjects])
-  const [currentPage, setCurrentPage] = useState(page ?? 1)
+  const [currentPage, setCurrentPage] = useState(pageFromQuery)
   const totalPages = 5
 
+  // Sync state with query params
+  useEffect(() => {
+    setCurrentPage(pageFromQuery)
+  }, [pageFromQuery])
+
+  // Handlers
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
     router.push(`/dashboard/projects?page=${pageNumber}`)
   }
 
   const handleNextPage = () => {
-    setCurrentPage(Number(currentPage) + 1)
-    router.push(`/dashboard/projects?page=${Number(currentPage) + 1}`)
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1)
+    }
   }
 
   const handlePreviousPage = () => {
-    setCurrentPage(Number(currentPage) - 1)
-    router.push(`/dashboard/projects?page=${Number(currentPage) - 1}`)
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1)
+    }
   }
 
+  // Render
   return (
     <div className='flex flex-col gap-14 py-10'>
-      <div className='grid grid-cols-3 gap-2 *:mt-10'>
+      <div className='grid grid-cols-3 gap-2'>
         {projects.map((project) => (
           <ProjectItem key={project.title} {...project} />
         ))}
@@ -61,7 +76,7 @@ const ProjectsPage = () => {
           </PaginationItem>
           {Array.from({ length: totalPages }, (_, index) => (
             <PaginationItem key={index}>
-              <PaginationLink href='#' onClick={() => handlePageChange(index + 1)}>
+              <PaginationLink href={`/dashboard/projects?page=${index + 1}`} onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
               </PaginationLink>
             </PaginationItem>

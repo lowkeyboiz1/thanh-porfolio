@@ -1,8 +1,7 @@
 'use client'
 import { Upload } from '@/components/Upload'
-import FormCreateProject from '../projects/FormCreateProject'
+import FormCreateProject from '@/app/dashboard/projects'
 const CreateNewProject = () => {
-  const urlEndpoint = process.env.NEXT_PUBLIC_URL_ENDPOINT
   return (
     <div className='flex flex-col gap-14'>
       <FormCreateProject />
