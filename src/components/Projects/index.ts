@@ -1,3 +1,4 @@
 import Projects from './Projects'
+import ProjectItem from './ProjectItem'
 
-export { Projects }
+export { Projects, ProjectItem }

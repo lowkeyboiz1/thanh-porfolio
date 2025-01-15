@@ -1,6 +1,8 @@
+'use client'
+
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
-import { PinContainer } from '../PinContainer'
+import { ProjectItem } from '@/components/Projects'
 
 const Projects = () => {
   const targetRef = useRef(null)
@@ -56,19 +58,7 @@ const Projects = () => {
         <div className='flex w-full items-center overflow-hidden'>
           <motion.div style={{ x }} className='flex h-full min-h-[500px] w-full gap-20'>
             {projects.map((project) => {
-              return (
-                <div key={project.title} className='flex w-full items-center justify-center'>
-                  <PinContainer title={project.title} href={project.href} containerClassName='!size-full'>
-                    <div className='flex h-[400px] w-[400px] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2'>
-                      <h3 className='!m-0 max-w-xs !pb-2 text-base font-bold text-slate-100'>{project.title}</h3>
-                      <div className='!m-0 !p-0 text-base font-normal'>
-                        <span className='text-slate-500'>{project.description}</span>
-                      </div>
-                      <div className='mt-4 flex w-full flex-1 rounded-lg bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500' />
-                    </div>
-                  </PinContainer>
-                </div>
-              )
+              return <ProjectItem key={project.title} {...project} />
             })}
           </motion.div>
         </div>
