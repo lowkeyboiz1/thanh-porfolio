@@ -23,10 +23,6 @@ const data = {
         {
           title: 'All Projects',
           url: '/dashboard/projects'
-        },
-        {
-          title: 'Create Project',
-          url: '/dashboard/create-new-project'
         }
       ]
     }

@@ -1,25 +1,28 @@
 import { ValidationError } from '@/lib/errors'
 
-export interface ProjectPayload {
+export interface IProjectPayload {
   title: string
   description: string
-  url: string
+  href: string
 }
 
-export function validateProjectPayload(payload: ProjectPayload): { valid: boolean; errors?: string[] } {
+export function validateProjectPayload(payload: IProjectPayload): { valid: boolean; errors?: string[] } {
   const errors: string[] = []
 
   if (!payload.title || typeof payload.title !== 'string' || payload.title.length < 3 || payload.title.length > 100) {
-    errors.push('Title must be a string between 3 and 100 characters.')
+    const error = 'Title must be a string between 3 and 100 characters.'
+    errors.push(error)
   }
 
   if (!payload.description || typeof payload.description !== 'string' || payload.description.length < 10 || payload.description.length > 500) {
-    errors.push('Description must be a string between 10 and 500 characters.')
+    const error = 'Description must be a string between 10 and 500 characters.'
+    errors.push(error)
   }
 
   const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
-  if (!payload.url || typeof payload.url !== 'string' || !urlPattern.test(payload.url)) {
-    errors.push('URL must be a valid URI.')
+  if (!payload.href || typeof payload.href !== 'string' || !urlPattern.test(payload.href)) {
+    const error = 'HREF must be a valid URL.'
+    errors.push(error)
   }
 
   if (errors.length > 0) {

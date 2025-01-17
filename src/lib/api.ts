@@ -20,15 +20,14 @@ export const apiRequest = async <T>(
     const response = await fetch(endpoint, defaultOptions)
 
     if (!response.ok) {
-      const errorText = await response.text() // Get the response as text
+      const errorText: any = await response.text() // Get the response as text
       if (errorText.startsWith('<!DOCTYPE html>')) {
         // This indicates an HTML response (likely an error page)
         toast.error('Unexpected HTML response. Please check the API endpoint.')
         throw new Error('Unexpected HTML response. Please check the API endpoint.')
       }
       const errorData = JSON.parse(errorText) // Try parsing the error as JSON if it's not HTML
-      const errorMessage = errorData.message || `HTTP error! status: ${response.status}`
-      toast.error(errorMessage)
+      const errorMessage = errorData.error || `HTTP error! status: ${response.status}`
       throw new Error(errorMessage)
     }
 

@@ -1,10 +1,13 @@
 'use client'
-import React from 'react'
-import { IKUpload, ImageKitProvider } from 'imagekitio-next'
+
+import React, { useState, useRef } from 'react'
+import { ImageKitProvider } from 'imagekitio-next'
+import { Image } from '../Image'
+import { uploadFiles } from '@/lib/upload'
 
 const authenticator = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/auth')
+    const response = await fetch(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/auth`)
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -19,26 +22,68 @@ const authenticator = async () => {
   }
 }
 
-const onError = (err: any) => {
-  console.log('Error', err)
-}
-
-const onSuccess = (res: any) => {
-  console.log('Success', res)
-}
-
-const onUploadProgress = (progress: any) => {
-  console.log('Progress', progress)
-}
-
 const Upload = () => {
-  const urlEndpoint = process.env.NEXT_PUBLIC_URL_ENDPOINT
-  const publicKey = process.env.NEXT_PUBLIC_PUBLIC_KEY
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ url: string; uuid: string }>>([])
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (files) {
+      setSelectedFiles(Array.from(files))
+    }
+  }
+
+  const onError = (err: any) => {
+    console.error('Error', err)
+  }
+
+  const onSubmit = async () => {
+    try {
+      const uploadedResults = await uploadFiles(selectedFiles)
+
+      // Update the uploaded files state
+      setUploadedFiles((prev) => [...prev, ...uploadedResults])
+
+      // Clear selected files after successful upload
+      setSelectedFiles([])
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+
+      alert('Files uploaded successfully!')
+    } catch (error: any) {
+      console.error('Upload error:', error.message)
+      alert(`Upload error: ${error.message}`)
+    }
+  }
 
   return (
-    <ImageKitProvider publicKey={publicKey} urlEndpoint={urlEndpoint}>
-      <IKUpload useUniqueFileName urlEndpoint={urlEndpoint} authenticator={authenticator} onError={onError} onSuccess={onSuccess} onUploadProgress={onUploadProgress} />
-    </ImageKitProvider>
+    <div>
+      <input type='file' ref={fileInputRef} onChange={handleFileChange} multiple accept='image/*' />
+      <div>
+        <h3>Selected Files: {selectedFiles.length}</h3>
+        <div>
+          {selectedFiles.map((file, index) => (
+            <p key={index}>{file.name}</p>
+          ))}
+        </div>
+      </div>
+      <div>
+        <h3>Uploaded Files:</h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          {uploadedFiles.map((file, index) => (
+            <div key={index} style={{ textAlign: 'center' }}>
+              <Image path={file.url} alt={`Uploaded file ${index + 1}`} width={100} height={100} />
+              <p style={{ fontSize: '12px', wordBreak: 'break-word' }}>URL: {file.url}</p>
+              <p style={{ fontSize: '12px', wordBreak: 'break-word' }}>UUID: {file.uuid}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <button onClick={onSubmit}>Upload Files</button>
+    </div>
   )
 }
 

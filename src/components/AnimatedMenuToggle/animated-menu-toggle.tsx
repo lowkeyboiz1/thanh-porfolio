@@ -14,7 +14,6 @@ const AnimatedMenuToggle = () => {
   const [buttonHeight, setButtonHeight] = useState<number>(48)
   const [isClickable, setIsClickable] = useState(true)
   const isMobile = useIsMobile()
-  console.log({ buttonHeight })
   const topLineVariants = {
     closed: { rotate: 0, translateY: 0 },
     open: { rotate: 45, translateY: buttonHeight / (isMobile ? 8 : 4) }
