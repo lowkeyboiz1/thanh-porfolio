@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-
+import { objectToFormData } from '@/utils/objectToFormData'
 interface AuthResponse {
   signature: string
   expire: string
@@ -9,6 +9,7 @@ interface AuthResponse {
 interface UploadResult {
   url: string
   uuid: string
+  fileId: string
 }
 
 const authenticator = async (): Promise<AuthResponse> => {
@@ -42,13 +43,14 @@ export const uploadFiles = async (files: File[]): Promise<UploadResult[]> => {
     const fileName = `${uuid}`
     const auth = await authenticator()
 
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('fileName', fileName)
-    formData.append('signature', auth.signature)
-    formData.append('token', auth.token)
-    formData.append('expire', auth.expire)
-    formData.append('publicKey', publicKey)
+    const formData = objectToFormData({
+      file: file,
+      fileName: fileName,
+      signature: auth.signature,
+      token: auth.token,
+      expire: auth.expire,
+      publicKey: publicKey
+    })
 
     const response = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
       method: 'POST',
@@ -60,9 +62,36 @@ export const uploadFiles = async (files: File[]): Promise<UploadResult[]> => {
     }
 
     const result = await response.json()
-    return { url: result.url, uuid }
+    return { url: result.url, uuid, fileId: result.fileId }
   })
 
   // Wait for all uploads to complete
   return Promise.all(uploadPromises)
+}
+
+export const deleteFile = async (fileId: string) => {
+  if (!fileId) {
+    throw new Error('FileId is required')
+  }
+
+  // Create base64 encoded auth string from private key
+  const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY!
+  const authString = Buffer.from(`${privateKey}:`).toString('base64')
+
+  const url = `https://api.imagekit.io/v1/files/${fileId}`
+  const options = {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Basic ${authString}`
+    }
+  }
+
+  try {
+    const response = await fetch(url, options)
+
+    return response
+  } catch (error: any) {
+    throw new Error(`Delete failed: ${error.message}`)
+  }
 }

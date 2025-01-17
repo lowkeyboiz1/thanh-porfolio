@@ -24,7 +24,9 @@ export const createProject = async (project: IProjectPayload) => {
 
   return response.json()
 }
-export const updateProject = async (project: IProjectPayload & { _id: string }) => {
+
+export const updateProject = async (project: IProjectPayload & { _id: string; image_review?: { url: string; fileId: string } }) => {
+  console.log({ project })
   const response = await fetch('/api/projects', {
     method: 'PUT',
     headers: {

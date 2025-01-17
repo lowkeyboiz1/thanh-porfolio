@@ -3,24 +3,7 @@
 import React, { useState, useRef } from 'react'
 import { ImageKitProvider } from 'imagekitio-next'
 import { Image } from '../Image'
-import { uploadFiles } from '@/lib/upload'
-
-const authenticator = async () => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/auth`)
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(`Request failed with status ${response.status}: ${errorText}`)
-    }
-
-    const data = await response.json()
-    const { signature, expire, token } = data
-    return { signature, expire, token }
-  } catch (error: any) {
-    throw new Error(`Authentication request failed: ${error.message}`)
-  }
-}
+import { uploadFiles } from '@/lib/imagekit'
 
 const Upload = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
