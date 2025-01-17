@@ -122,7 +122,7 @@ const Hero = () => {
         <div className='flex items-center gap-5'>
           {socialLinks.map((link) => (
             <MagneticWrapper key={link.name}>
-              <Link href={link.url} className='group p-10'>
+              <Link href={link.url} target='_blank' className='group p-10'>
                 {link.name === 'Tiktok' ? (
                   <div className='size-[26px]'>
                     <Image src={link.icon} alt='Tiktok Icon' width={30} height={30} className='size-full duration-200 group-hover:text-default' />

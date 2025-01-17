@@ -25,7 +25,6 @@ export const createProject = async (project: IProjectPayload) => {
   return response.json()
 }
 export const updateProject = async (project: IProjectPayload & { _id: string }) => {
-  console.log({ project })
   const response = await fetch('/api/projects', {
     method: 'PUT',
     headers: {

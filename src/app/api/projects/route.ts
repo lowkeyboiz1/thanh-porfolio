@@ -95,16 +95,6 @@ export async function PUT(request: NextRequest) {
       throw new ValidationError('Validation failed', errors)
     }
 
-    // Check if another project with the same title exists (excluding current project)
-    const existingProject = await db.collection(COLLECTION_NAME).findOne({
-      title: payload.title,
-      _id: { $ne: payload._id }
-    })
-
-    if (existingProject) {
-      return NextResponse.json({ error: 'A project with this title already exists' }, { status: 409 })
-    }
-
     const { _id, ...updateData } = payload
     const result = await db.collection(COLLECTION_NAME).updateOne({ _id: new ObjectId(_id) }, { $set: { ...updateData, updatedAt: new Date() } })
 
