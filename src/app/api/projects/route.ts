@@ -29,9 +29,6 @@ export async function POST(request: NextRequest) {
     if (!payload.description) {
       return NextResponse.json({ error: 'Missing required field: description' }, { status: 400 })
     }
-    if (!payload.href) {
-      return NextResponse.json({ error: 'Missing required field: href' }, { status: 400 })
-    }
 
     // Check if project with same title already exists
     const existingProject = await db.collection(COLLECTION_NAME).findOne({
@@ -85,9 +82,6 @@ export async function PUT(request: NextRequest) {
     }
     if (!payload.description) {
       return NextResponse.json({ error: 'Missing required field: description' }, { status: 400 })
-    }
-    if (!payload.href) {
-      return NextResponse.json({ error: 'Missing required field: href' }, { status: 400 })
     }
 
     const { valid, errors } = validateProjectPayload(payload)

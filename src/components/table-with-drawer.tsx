@@ -13,6 +13,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
+
+import { RichEditor } from '@/components/RichEditor'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -29,7 +31,6 @@ import { toast } from 'sonner'
 interface Item {
   _id: string
   title: string
-  href: string
   description: string
   image_review: {
     url: string
@@ -57,7 +58,6 @@ export default function TableWithDrawer() {
   const [errors, setErrors] = useState({
     title: '',
     description: '',
-    href: '',
     image_review: ''
   })
 
@@ -127,7 +127,6 @@ export default function TableWithDrawer() {
     const newErrors = {
       title: '',
       description: '',
-      href: '',
       image_review: ''
     }
 
@@ -149,16 +148,6 @@ export default function TableWithDrawer() {
       newErrors.description = 'Description must be less than 500 characters'
     }
 
-    // URL validation
-    if (!item.href?.trim()) {
-      newErrors.href = 'HREF is required'
-    } else {
-      const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
-      if (!item.href || typeof item.href !== 'string' || !urlPattern.test(item.href)) {
-        newErrors.href = 'HREF must be a valid URL.'
-      }
-    }
-
     // Image validation
     if (!item.image_review && !selectedFileImage) {
       newErrors.image_review = 'Image is required'
@@ -170,13 +159,7 @@ export default function TableWithDrawer() {
 
   const handleUpdate = async (updatedItem: Item) => {
     // Check if anything has changed
-    if (
-      !selectedFileImage &&
-      selectedItem?.title === updatedItem.title &&
-      selectedItem?.description === updatedItem.description &&
-      selectedItem?.href === updatedItem.href &&
-      selectedItem?.image_review?.url === updatedItem.image_review?.url
-    ) {
+    if (!selectedFileImage && selectedItem?.title === updatedItem.title && selectedItem?.description === updatedItem.description && selectedItem?.image_review?.url === updatedItem.image_review?.url) {
       setIsSheetOpen(false)
       return
     }
@@ -199,8 +182,8 @@ export default function TableWithDrawer() {
     }
     try {
       console.log({ updatedItem })
-      const { title, description, href, _id, image_review } = updatedItem
-      await updateProject({ title, description, href, _id, image_review })
+      const { title, description, _id, image_review } = updatedItem
+      await updateProject({ title, description, _id, image_review })
       setItems(items.map((item) => (item._id === updatedItem._id ? updatedItem : item)))
       setIsSheetOpen(false)
       toast.success('Item updated successfully')
@@ -283,7 +266,6 @@ export default function TableWithDrawer() {
                 const formData = new FormData(e.currentTarget)
                 const newItem = {
                   title: formData.get('title') as string,
-                  href: formData.get('href') as string,
                   description: formData.get('description') as string,
                   image_review: selectedFileImage
                 }
@@ -295,11 +277,6 @@ export default function TableWithDrawer() {
                   <Label htmlFor='add-title'>Title</Label>
                   <Input id='add-title' name='title' placeholder='Enter title' className={errors.title ? 'border-red-500' : ''} onChange={() => setErrors((prev) => ({ ...prev, title: '' }))} />
                   {errors.title && <p className='text-sm text-red-500'>{errors.title}</p>}
-                </div>
-                <div className='space-y-2'>
-                  <Label htmlFor='add-href'>Href</Label>
-                  <Input id='add-href' name='href' placeholder='Enter href' className={errors.href ? 'border-red-500' : ''} onChange={() => setErrors((prev) => ({ ...prev, href: '' }))} />
-                  {errors.href && <p className='text-sm text-red-500'>{errors.href}</p>}
                 </div>
                 <div className='space-y-2'>
                   <Label htmlFor='add-description'>Description</Label>
@@ -358,6 +335,9 @@ export default function TableWithDrawer() {
                     </div>
                   )}
                 </div>
+                <div className='space-y-2'>
+                  <RichEditor />
+                </div>
               </div>
               <DialogFooter>
                 <Button type='submit' disabled={isAdding}>
@@ -373,7 +353,6 @@ export default function TableWithDrawer() {
         <TableHeader>
           <TableRow>
             <TableHead>Title</TableHead>
-            <TableHead>Href</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Image</TableHead>
             <TableHead>Actions</TableHead>
@@ -390,7 +369,6 @@ export default function TableWithDrawer() {
             paginatedItems.map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.title}</TableCell>
-                <TableCell>{item.href}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>
                   <div className='size-[100px] overflow-hidden rounded-lg'>
@@ -424,7 +402,6 @@ export default function TableWithDrawer() {
                               const updatedItem = {
                                 ...selectedItem,
                                 title: formData.get('title') as string,
-                                href: formData.get('href') as string,
                                 description: formData.get('description') as string,
                                 detail: formData.get('detail') as string
                               }
@@ -443,17 +420,7 @@ export default function TableWithDrawer() {
                                 />
                                 {errors.title && <p className='text-sm text-red-500'>{errors.title}</p>}
                               </div>
-                              <div>
-                                <Label htmlFor='href'>Href</Label>
-                                <Input
-                                  id='href'
-                                  name='href'
-                                  defaultValue={selectedItem.href}
-                                  className={errors.href ? 'border-red-500' : ''}
-                                  onChange={() => setErrors((prev) => ({ ...prev, href: '' }))}
-                                />
-                                {errors.href && <p className='text-sm text-red-500'>{errors.href}</p>}
-                              </div>
+
                               <div>
                                 <Label htmlFor='description'>Description</Label>
                                 <Input

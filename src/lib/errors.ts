@@ -10,6 +10,18 @@ export class ValidationError extends Error {
   }
 }
 
+export class ApiError extends Error {
+  statusCode: number
+  details: string[]
+
+  constructor(message: string, details: string[] = [], statusCode = 400) {
+    super(message)
+    this.name = 'ApiError'
+    this.statusCode = statusCode
+    this.details = details
+  }
+}
+
 export class DatabaseError extends Error {
   statusCode: number
 

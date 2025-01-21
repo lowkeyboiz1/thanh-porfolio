@@ -1,4 +1,5 @@
 import { IProjectPayload } from '@/app/validators/projectValidator'
+import { ApiError } from '@/lib/errors'
 
 export const getProjects = async () => {
   const response = await fetch('/api/projects')
@@ -19,14 +20,14 @@ export const createProject = async (project: IProjectPayload) => {
 
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.error || 'Failed to create project')
+    console.log({ response, error })
+    throw new ApiError(error?.error || 'Failed to create project')
   }
 
   return response.json()
 }
 
 export const updateProject = async (project: IProjectPayload & { _id: string; image_review?: { url: string; fileId: string } }) => {
-  console.log({ project })
   const response = await fetch('/api/projects', {
     method: 'PUT',
     headers: {
