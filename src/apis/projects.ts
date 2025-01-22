@@ -1,10 +1,11 @@
 import { IProjectPayload } from '@/app/validators/projectValidator'
 import { ApiError } from '@/lib/errors'
+import { TPoject } from '@/type'
 
-export const getProjects = async () => {
+export const getProjects = async (): Promise<TPoject[]> => {
   const response = await fetch('/api/projects')
   if (!response.ok) {
-    throw new Error('Failed to fetch projects')
+    throw new ApiError('Failed to fetch projects')
   }
   return response.json()
 }
@@ -58,5 +59,13 @@ export const deleteProject = async (_id: string) => {
     throw new Error(error.error || 'Failed to delete project')
   }
 
+  return response.json()
+}
+
+export const getProjectDetail = async (id: string) => {
+  const response = await fetch(`/api/projects/${id}`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch project detail')
+  }
   return response.json()
 }

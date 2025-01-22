@@ -5,9 +5,7 @@ import Lenis from '@studio-freight/lenis'
 
 const useLenis = () => {
   useEffect(() => {
-    const lenis = new Lenis({
-      lerp: 0.05
-    })
+    const lenis = new Lenis()
 
     const raf = (time: number) => {
       lenis.raf(time)

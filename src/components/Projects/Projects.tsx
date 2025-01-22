@@ -1,66 +1,78 @@
-'use client'
-
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
-import { ProjectItem } from '@/components/Projects'
+import { PinContainer } from '../PinContainer'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { typeOfProject } from '@/utils/constans'
+import { getProjects } from '@/apis/projects'
+import { TPoject } from '@/type'
+import { useState, useEffect } from 'react'
 
 const Projects = () => {
   const targetRef = useRef(null)
+  const [projects, setProjects] = useState<TPoject[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const isMobile = useIsMobile()
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setIsLoading(true)
+        const projects = await getProjects()
+        setProjects(projects || [])
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchProjects()
+  }, [])
+
   const { scrollYProgress } = useScroll({
     target: targetRef
   })
 
-  const projects = [
-    {
-      title: 'Trello Clone',
-      href: 'https://trello.aceternity.com',
-      description: 'A Trello clone built with Fullstack (Next.js, Tailwind CSS, ExpressJS, NextUI, MongoDB).'
-    },
-    {
-      title: 'Vua Thợ Website',
-      href: 'https://vuatho.com',
-      description: 'Vua Thợ is a company website I developed to showcase our projects and services.'
-    },
-    {
-      title: 'Youtube Clone',
-      href: 'https://youtube.aceternity.com',
-      description: 'A Youtube clone built with Fullstack (React.js, Tailwind CSS, Nodejs, ExpressJS, MongoDB).'
-    },
-    {
-      title: 'Shop T-Shirt 3D',
-      href: 'https://shop.aceternity.com',
-      description: 'A 3D shop for T-Shirt.'
-    },
-    {
-      title: 'Task Manager',
-      href: 'https://tasks.example.com',
-      description: 'A task manager for organizing and tracking your tasks.'
-    },
-    {
-      title: 'Recipe Finder',
-      href: 'https://recipes.example.com',
-      description: 'A recipe finder for finding recipes based on ingredients or cuisine.'
-    },
-    {
-      title: 'Social Media Dashboard',
-      href: 'https://social.example.com',
-      description: 'A social media dashboard for managing your social media accounts.'
-    }
-  ]
-
-  const x = useTransform(scrollYProgress, [0, 1], ['2%', '-200%'])
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 32}%`])
 
   return (
-    <section id='projects' ref={targetRef} className='relative left-10 h-[150vh] w-[calc(100vw-100px)] !px-0 page'>
+    <section id='projects' ref={targetRef} className='relative h-[150vh] w-full page'>
       <div className='sticky top-40'>
-        <div className='gradient-text text-6xl font-bold'>My Projects</div>
-        <div className='mt-2 max-w-sm text-2xl font-medium leading-[2] md:max-w-lg'>Some things I&apos;ve built with love, expertise and a pinch of magical ingredients.</div>
+        <div className='gradient-text text-4xl font-bold xl:text-6xl'>My Projects</div>
+        <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>
+          Some things I&apos;ve built with love, expertise and a pinch of magical ingredients.
+        </div>
         <div className='flex w-full items-center overflow-hidden'>
-          <motion.div style={{ x }} className='flex h-full min-h-[500px] w-full gap-20'>
-            {projects.map((project) => {
-              return <ProjectItem key={project.title} {...project} />
-            })}
-          </motion.div>
+          {isLoading ? (
+            <div className='flex h-full min-h-[500px] w-full gap-20'>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className='flex w-full items-center justify-center'>
+                  <div className='flex size-[400px] basis-full flex-col gap-4 rounded-lg bg-gray-800/50 p-4'>
+                    <div className='h-6 w-48 animate-pulse rounded-lg bg-gray-700/50' />
+                    <div className='h-20 w-full animate-pulse rounded-lg bg-gray-700/50' />
+                    <div className='flex-1 animate-pulse rounded-lg bg-gray-700/50' />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <motion.div style={{ x }} className='flex h-full min-h-[500px] w-full gap-20'>
+              {projects.map((project) => {
+                return (
+                  <div key={project.title} className='flex w-full items-center justify-center'>
+                    <PinContainer title={project.title} href={`/projects/${project.slug}`} containerClassName='!size-full'>
+                      <div className='flex size-[400px] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2'>
+                        <h3 className='!m-0 max-w-xs !pb-2 text-base font-bold text-slate-100'>{project.title}</h3>
+                        <div className='!m-0 !p-0 text-base font-normal'>
+                          <span className='text-slate-500'>{project.description}</span>
+                        </div>
+                        <div className='mt-4 flex w-full flex-1 rounded-lg bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500' />
+                      </div>
+                    </PinContainer>
+                  </div>
+                )
+              })}
+            </motion.div>
+          )}
         </div>
       </div>
     </section>
