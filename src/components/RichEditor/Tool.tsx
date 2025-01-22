@@ -1,14 +1,16 @@
 import ToolButton from '@/components/RichEditor/ToolButton'
-import { Editor } from '@tiptap/react'
+import { ChainedCommands, Editor } from '@tiptap/react'
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, CodeIcon, DotIcon, ImageIcon, ItalicIcon, ListOrderedIcon, StrikethroughIcon, UnderlineIcon } from 'lucide-react'
-import { FC } from 'react'
+import { ChangeEventHandler, FC } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, Loader2, Upload } from 'lucide-react'
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
+import { chainMethods } from '@/utils/chainMethods'
 
 interface Props {
   editor: Editor | null
@@ -17,6 +19,11 @@ interface Props {
 }
 
 const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
+  const [url, setUrl] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]) // Track uploaded files
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const tools = [
     { name: 'bold', icon: <BoldIcon /> }, // Mark: bold
     { name: 'italic', icon: <ItalicIcon /> }, // Mark: italic
@@ -30,6 +37,14 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     { name: 'right', icon: <AlignRightIcon /> }, // Special: text align right
     { name: 'upload', icon: <ImageIcon /> } // Special: insert image
   ]
+  const headingOptions = [
+    { name: 'p', value: 'Paragraph' },
+    { name: 'h1', value: 'Heading 1' },
+    { name: 'h2', value: 'Heading 2' },
+    { name: 'h3', value: 'Heading 3' }
+  ] as const
+
+  type THeading = (typeof headingOptions)[number]['name']
 
   const handleToolClick = (name: string) => {
     if (!editor) return
@@ -39,25 +54,24 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
       case 'underline':
       case 'strike':
       case 'code':
-        editor.chain().focus().toggleMark(name).run()
+        chainMethods(editor, (chain) => chain.toggleMark(name))
         break
       case 'bulletList':
-        editor.chain().focus().toggleBulletList().run()
+        chainMethods(editor, (chain) => chain.toggleBulletList())
         break
       case 'orderedList':
-        editor.chain().focus().toggleOrderedList().run()
+        chainMethods(editor, (chain) => chain.toggleOrderedList())
         break
       case 'left':
-        editor.chain().focus().setTextAlign('left').run()
+        chainMethods(editor, (chain) => chain.setTextAlign('left'))
         break
       case 'center':
-        editor.chain().focus().setTextAlign('center').run()
+        chainMethods(editor, (chain) => chain.setTextAlign('center'))
         break
       case 'right':
-        editor.chain().focus().setTextAlign('right').run()
+        chainMethods(editor, (chain) => chain.setTextAlign('right'))
         break
       case 'upload':
-        // Image handling is now done via dialog
         setIsOpen(true)
         break
       default:
@@ -65,11 +79,33 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     }
   }
 
-  const [url, setUrl] = useState<string>('')
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]) // Track uploaded files
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const handleSelectHeading = (value: THeading) => {
+    if (!editor) return
+    switch (value) {
+      case 'p':
+        chainMethods(editor, (chain) => chain.setParagraph())
+        break
+      case 'h1':
+        chainMethods(editor, (chain) => chain.toggleHeading({ level: 1 }))
+        break
+      case 'h2':
+        chainMethods(editor, (chain) => chain.toggleHeading({ level: 2 }))
+        break
+      case 'h3':
+        chainMethods(editor, (chain) => chain.toggleHeading({ level: 3 }))
+        break
+      default:
+        chainMethods(editor, (chain) => chain.setParagraph())
+    }
+  }
+
+  const getSelectedHeadingLevel = () => {
+    let result: THeading = 'p'
+    if (editor?.isActive('heading', { level: 1 })) result = 'h1'
+    if (editor?.isActive('heading', { level: 2 })) result = 'h2'
+    if (editor?.isActive('heading', { level: 3 })) result = 'h3'
+    return result
+  }
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -112,7 +148,7 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
 
         if (editor && imageUrl) {
           setUploadedFiles((prev) => [...prev, file])
-          editor.chain().focus().setImage({ src: imageUrl, alt: file.name }).run()
+          chainMethods(editor, (chain) => chain.setImage({ src: imageUrl, alt: file.name }))
         }
       } catch (error) {
         console.error('Error handling file:', error)
@@ -131,7 +167,7 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     if (!url || !editor) return
     setIsLoading(true)
     try {
-      editor.chain().focus().setImage({ src: url, alt: url }).run()
+      chainMethods(editor, (chain) => chain.setImage({ src: url, alt: url }))
       setIsOpen(false)
     } catch (error) {
       console.error('Error setting image:', error)
@@ -141,7 +177,6 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     }
   }
 
-  // Function to save content and files
   const handleSave = async () => {
     if (!editor || !onSave) return
 
@@ -153,22 +188,9 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     await onSave(contentWithoutBase64, uploadedFiles)
   }
 
-  if (!editor) return
-  const content = editor.getHTML()
-  const contentClone = content
-  const contentWithoutBase64 = contentClone.replace(/src="data:image\/[^>]*>/g, uploadedFiles.length.toString())
-  console.log({ contentWithoutBase64, uploadedFiles })
-
   return (
     <div className='relative top-0 flex gap-0.5'>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        {/* <DialogTrigger asChild>
-                <div>
-                  <ToolButton isActive={editor?.isActive('image')} onClick={() => setIsOpen(true)}>
-                    {icon}
-                  </ToolButton>
-                </div>
-              </DialogTrigger> */}
         <DialogContent>
           <DialogTitle className='hidden'>Upload Image</DialogTitle>
           <div className='rounded-xl p-6'>
@@ -201,6 +223,18 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
           </div>
         </DialogContent>
       </Dialog>
+      <Select value={getSelectedHeadingLevel()} onValueChange={handleSelectHeading}>
+        <SelectTrigger className='w-[180px]'>
+          <SelectValue placeholder='Select heading' />
+        </SelectTrigger>
+        <SelectContent>
+          {headingOptions.map(({ name, value }) => (
+            <SelectItem key={name} value={name}>
+              {value}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       {tools.map(({ name, icon }) => {
         return (
           <ToolButton key={name} isActive={editor?.isActive(name) || editor?.isActive({ textAlign: name })} onClick={() => handleToolClick(name)}>
