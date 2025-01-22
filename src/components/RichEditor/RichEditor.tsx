@@ -13,21 +13,19 @@ import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { FC } from 'react'
 import './rickEdior.css'
 
-interface Props {
-  content: string
-  uploadedFiles: File[]
-  onSave: (content: string, uploadedFiles: File[]) => void
-}
-
-const RichEditor: FC<Props> = () => {
+const RichEditor = () => {
   const extensions = [
     Underline,
     BulletList,
     ListItem,
     OrderedList,
+    BulletList.configure({
+      HTMLAttributes: {
+        class: 'list-disc'
+      }
+    }),
     TextAlign,
     Heading,
     Placeholder.configure({
@@ -40,11 +38,6 @@ const RichEditor: FC<Props> = () => {
       HTMLAttributes: {
         class: 'rounded-lg max-h-[500px] w-auto mx-auto object-cover'
       }
-    }),
-    BulletList.configure({
-      keepAttributes: false,
-      keepMarks: true,
-      itemTypeName: 'listItem'
     }),
     TextAlign.configure({
       types: ['heading', 'paragraph']
