@@ -1,12 +1,22 @@
-import { getProjectDetail } from '@/apis/projects'
 import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-import { COLLECTION_PROJECTS_NAME } from '@/app/api/projects/route'
-import { ObjectId } from 'mongodb'
+import { COLLECTION_PROJECTS_NAME } from '@/utils/constans'
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
-  const { slug } = params
-  const projectdetail = await db.collection(COLLECTION_PROJECTS_NAME).findOne({ slug })
+export async function GET(
+  request: NextRequest,
+  context: any // Use `context` explicitly and type it correctly
+) {
+  try {
+    const { slug } = context.params // Access `slug` from the context
+    const projectDetail = await db.collection(COLLECTION_PROJECTS_NAME).findOne({ slug })
 
-  return NextResponse.json(projectdetail)
+    if (!projectDetail) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(projectDetail)
+  } catch (error) {
+    console.error('Error fetching project detail:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  }
 }

@@ -2,7 +2,7 @@ import { IProjectPayload } from '@/app/validators/projectValidator'
 import { ApiError } from '@/lib/errors'
 import { TPoject } from '@/type'
 
-export const getProjects = async (): Promise<TPoject[]> => {
+export const getProjects = async () => {
   const response = await fetch('/api/projects')
   if (!response.ok) {
     throw new ApiError('Failed to fetch projects')

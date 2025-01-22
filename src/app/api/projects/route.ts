@@ -4,8 +4,7 @@ import { validateProjectPayload } from '@/app/validators/projectValidator'
 import { ValidationError, DatabaseError } from '@/lib/errors'
 import { ObjectId } from 'mongodb'
 import { createSlug } from '@/utils/createSlug'
-
-export const COLLECTION_PROJECTS_NAME = 'projects'
+import { COLLECTION_PROJECTS_NAME } from '@/utils/constans'
 
 export async function GET() {
   try {
