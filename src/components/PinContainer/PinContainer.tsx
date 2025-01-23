@@ -26,8 +26,16 @@ export const PinContainer = ({
     setTransform('translate(-50%,-50%) rotateX(0deg) scale(1)')
   }
 
+  const isExternalLink = href?.startsWith('http')
+
   return (
-    <Link target='_blank' className={cn('group/pin relative z-50 cursor-pointer', containerClassName)} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} href={href || '/'}>
+    <Link
+      target={isExternalLink ? '_blank' : undefined}
+      className={cn('group/pin relative z-50 cursor-pointer', containerClassName)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      href={href || '/'}
+    >
       <div
         style={{
           perspective: '1000px',

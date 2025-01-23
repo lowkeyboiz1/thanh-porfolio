@@ -1,6 +1,7 @@
 import { useMenuStore } from '@/store/useMenuStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const anim = {
   initial: {
@@ -23,6 +24,9 @@ const menuItems = [
 
 export default function Menu() {
   const { isMenuOpen, toggleMenu } = useMenuStore()
+  const pathname = usePathname()
+  const isHomePage = pathname === '/'
+
   return (
     <motion.div
       style={{ display: isMenuOpen ? 'flex' : 'none' }}
@@ -45,7 +49,7 @@ export default function Menu() {
             }}
           >
             <motion.div animate='initial' whileHover='hover' className='cursor-pointer'>
-              <Link className='text-[5vw] font-bold 2xl:text-[3vw]' href={item.href}>
+              <Link className='text-[5vw] font-bold 2xl:text-[3vw]' href={isHomePage ? item.href : `/${item.href}`}>
                 <motion.span className='inline-flex'>
                   {item.label.split('').map((letter, i) => (
                     <motion.span

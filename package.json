@@ -43,6 +43,8 @@
     "imagekit": "^6.0.0",
     "imagekitio-next": "^1.0.1",
     "joi": "^17.13.3",
+    "jose": "^5.9.6",
+    "jsonwebtoken": "^9.0.2",
     "lenis": "^1.1.18",
     "lucide-react": "^0.469.0",
     "mini-svg-data-uri": "^1.4.4",
@@ -64,6 +66,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19",
