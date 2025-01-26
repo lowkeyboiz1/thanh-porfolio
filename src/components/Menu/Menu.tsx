@@ -68,7 +68,7 @@ export default function Menu() {
                         hover: {
                           y: [-2, 2, -2, 0], // Smooth bounce
                           rotate: [0, 5, -5, 0],
-                          color: '#ff6347',
+                          color: '#123273',
                           transition: {
                             duration: 0.3,
                             ease: 'easeInOut',

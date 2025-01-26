@@ -1,6 +1,13 @@
-login
+login => done
 CRUD detail project
 UI and api detail project
 
 
 
+change UI follow description of Thành
+1. hero
+2. EDUCATION
+3 MY SKILLS
+4. WORK EXPERIENCE
+5. MY LATEST PROJECTS
+6. Ready to embark on a new project? Work with me.

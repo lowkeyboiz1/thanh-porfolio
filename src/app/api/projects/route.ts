@@ -5,6 +5,7 @@ import { ValidationError, DatabaseError } from '@/lib/errors'
 import { ObjectId } from 'mongodb'
 import { createSlug } from '@/utils/createSlug'
 import { COLLECTION_PROJECTS_NAME } from '@/utils/constans'
+import { deleteFile } from '@/lib/imagekit'
 
 export async function GET() {
   try {
@@ -100,8 +101,17 @@ export async function PUT(request: NextRequest) {
       throw new ValidationError('Validation failed', errors)
     }
 
-    const { _id, ...updateData } = payload
-    const result = await db.collection(COLLECTION_PROJECTS_NAME).updateOne({ _id: new ObjectId(_id) }, { $set: { ...updateData, updatedAt: new Date() } })
+    const { _id, detail, ...updateData } = payload
+    const result = await db.collection(COLLECTION_PROJECTS_NAME).updateOne(
+      { _id: new ObjectId(_id) },
+      {
+        $set: {
+          ...updateData,
+          detail: detail || '',
+          updatedAt: new Date()
+        }
+      }
+    )
 
     if (!result.matchedCount) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
@@ -134,12 +144,26 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Missing project ID' }, { status: 400 })
     }
 
+    // Find project first to get image fileId
+    const project = await db.collection(COLLECTION_PROJECTS_NAME).findOne({
+      _id: new ObjectId(_id)
+    })
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    }
+
+    // Delete image from ImageKit
+    if (project.image_review?.fileId) {
+      await deleteFile(project.image_review.fileId)
+    }
+
     const result = await db.collection(COLLECTION_PROJECTS_NAME).deleteOne({
       _id: new ObjectId(_id)
     })
 
     if (!result.deletedCount) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 })
     }
 
     return NextResponse.json({ message: 'Project deleted successfully' })

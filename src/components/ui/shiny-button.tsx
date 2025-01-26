@@ -45,8 +45,8 @@ const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>(({ chi
       <span
         className='relative block size-full text-sm uppercase tracking-wide text-[rgb(0,0,0,65%)] dark:font-light dark:text-[rgb(255,255,255,90%)]'
         style={{
-          maskImage: 'linear-gradient(-75deg, #ff6347 calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #ff8c00 calc(var(--x) + 100%))',
-          WebkitMaskImage: 'linear-gradient(-75deg, #ff6347 calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #ff8c00 calc(var(--x) + 100%))'
+          maskImage: 'linear-gradient(-75deg, #123273 calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #ff8c00 calc(var(--x) + 100%))',
+          WebkitMaskImage: 'linear-gradient(-75deg, #123273 calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #ff8c00 calc(var(--x) + 100%))'
         }}
       >
         {children}
@@ -57,7 +57,7 @@ const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>(({ chi
           WebkitMaskComposite: 'destination-out',
           maskComposite: 'exclude'
         }}
-        className='absolute inset-0 z-10 block rounded-[inherit] bg-[linear-gradient(-75deg,#ff6347_calc(var(--x)+20%),#ff4500_calc(var(--x)+50%),#ff8c00_calc(var(--x)+100%))] p-px'
+        className='absolute inset-0 z-10 block rounded-[inherit] bg-[linear-gradient(-75deg,#123273_calc(var(--x)+20%),#ff4500_calc(var(--x)+50%),#ff8c00_calc(var(--x)+100%))] p-px'
       ></span>
     </motion.button>
   )

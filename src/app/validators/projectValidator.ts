@@ -3,6 +3,7 @@ import { ValidationError } from '@/lib/errors'
 export interface IProjectPayload {
   title: string
   description: string
+  detail: string
 }
 
 export function validateProjectPayload(payload: IProjectPayload): { valid: boolean; errors?: string[] } {
@@ -15,6 +16,11 @@ export function validateProjectPayload(payload: IProjectPayload): { valid: boole
 
   if (!payload.description || typeof payload.description !== 'string' || payload.description.length < 10 || payload.description.length > 500) {
     const error = 'Description must be a string between 10 and 500 characters.'
+    errors.push(error)
+  }
+
+  if (payload.detail && typeof payload.detail !== 'string') {
+    const error = 'Detail must be a string.'
     errors.push(error)
   }
 

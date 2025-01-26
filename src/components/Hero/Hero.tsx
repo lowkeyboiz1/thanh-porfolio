@@ -9,7 +9,7 @@ import ShinyButton from '@/components/ui/shiny-button'
 import { useCursorStore } from '@/store/useCursorStore'
 import confetti from 'canvas-confetti'
 import { motion } from 'framer-motion'
-import { Facebook, Github, Instagram } from 'lucide-react'
+import { Mail, Linkedin } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRef } from 'react'
@@ -19,24 +19,19 @@ const Hero = () => {
   const containerRef = useRef(null)
   const socialLinks = [
     {
-      name: 'Github',
-      url: 'https://github.com/lowkeyboiz1',
-      icon: Github
+      name: 'Gmail',
+      url: 'mailto:your.email@gmail.com',
+      icon: Mail
     },
     {
-      name: 'Instagram',
-      url: 'https://www.instagram.com/lvkhang_',
-      icon: Instagram
-    },
-    {
-      name: 'Facebook',
-      url: 'https://www.facebook.com/lowkeyboiz1',
-      icon: Facebook
+      name: 'LinkedIn',
+      url: 'https://www.linkedin.com/in/your-profile',
+      icon: Linkedin
     },
     {
       name: 'Tiktok',
       url: 'https://www.tiktok.com/@sheepcutee',
-      icon: Tiktok // Keep the imported Tiktok SVG here
+      icon: Tiktok
     }
   ]
 
@@ -84,6 +79,13 @@ const Hero = () => {
         y: (rect.top + rect.bottom) / 2 / window.innerHeight
       }
     })
+  }
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   return (
@@ -134,11 +136,13 @@ const Hero = () => {
             </MagneticWrapper>
           ))}
         </div>
-        <ShinyButton className='px-10 py-4'>
-          <HyperText delay={500} duration={400} className='text-xl'>
-            Let&apos;s talk
-          </HyperText>
-        </ShinyButton>
+        <div onClick={() => scrollToSection('donate')}>
+          <ShinyButton className='px-10 py-4'>
+            <HyperText delay={500} duration={400} className='text-xl'>
+              Let&apos;s collaborate!
+            </HyperText>
+          </ShinyButton>
+        </div>
       </motion.div>
       <motion.div
         ref={containerRef}

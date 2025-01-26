@@ -46,7 +46,7 @@ export default function MinimalistVietQRDonation() {
     <div id='donate' className='my-20 bg-black p-4 text-white page'>
       <div className='mx-auto space-y-8'>
         <div>
-          <h2 className='mb-4 flex items-center gap-2 text-4xl font-bold text-[#ff6347] md:text-5xl'>
+          <h2 className='mb-4 flex items-center gap-2 text-4xl font-bold text-[#123273] md:text-5xl'>
             Donate
             <span className='text-yellow-500'>✨</span>
           </h2>
@@ -58,7 +58,7 @@ export default function MinimalistVietQRDonation() {
         <div className='space-y-8'>
           <div>
             <div className='mb-2 flex items-center gap-2'>
-              <Zap className='h-5 w-5 text-[#ff6347]' />
+              <Zap className='h-5 w-5 text-[#123273]' />
               <h3 className='text-2xl font-semibold'>Be the Force Behind Change 🚀</h3>
             </div>
             <p className='text-xl text-gray-400'>Your support turns small steps into giant leaps</p>
@@ -83,7 +83,7 @@ export default function MinimalistVietQRDonation() {
                 <div
                   key={value}
                   onClick={() => handleAmountChange(value)}
-                  className={`w-full rounded-lg border px-4 py-3 text-center transition-colors ${amount === value ? 'border-[#ff6347]/80 bg-[#ff6347]/20 font-bold text-white' : 'bg-zinc-900 hover:bg-zinc-800'}`}
+                  className={`w-full rounded-lg border px-4 py-3 text-center transition-colors ${amount === value ? 'border-[#123273]/80 bg-[#123273]/20 font-bold text-white' : 'bg-zinc-900 hover:bg-zinc-800'}`}
                 >
                   {parseInt(value).toLocaleString()} ₫
                 </div>
@@ -93,7 +93,7 @@ export default function MinimalistVietQRDonation() {
 
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
-              <Gift className='h-4 w-4 text-[#ff6347]' />
+              <Gift className='h-4 w-4 text-[#123273]' />
               <span>Custom Amount (VND)</span>
             </div>
             <Input value={customAmount} onChange={handleCustomAmountChange} placeholder='Enter custom amount' className='border-zinc-800 bg-zinc-900 text-white placeholder:text-gray-400' />
@@ -101,7 +101,7 @@ export default function MinimalistVietQRDonation() {
 
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
-              <MessageCircle className='h-4 w-4 text-[#ff6347]' />
+              <MessageCircle className='h-4 w-4 text-[#123273]' />
               <span>Your Message (Optional)</span>
             </div>
             <Textarea

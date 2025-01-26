@@ -27,7 +27,6 @@ import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon,
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { TPoject } from '@/type'
 
 interface Item {
   _id: string
@@ -37,6 +36,7 @@ interface Item {
     url: string
     fileId: string
   }
+  detail: string
 }
 
 const ITEMS_PER_PAGE = 5
@@ -56,10 +56,13 @@ export default function TableWithDrawer() {
   const [isUpdating, setIsUpdating] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [selectedFileImage, setSelectedFileImage] = useState<File | null>(null)
+  const [projectDetail, setProjectDetail] = useState<string | null>(null)
+
   const [errors, setErrors] = useState({
     title: '',
     description: '',
-    image_review: ''
+    image_review: '',
+    detail: ''
   })
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +131,8 @@ export default function TableWithDrawer() {
     const newErrors = {
       title: '',
       description: '',
-      image_review: ''
+      image_review: '',
+      detail: ''
     }
 
     // Title validation
@@ -149,6 +153,10 @@ export default function TableWithDrawer() {
       newErrors.description = 'Description must be less than 500 characters'
     }
 
+    if (!item.detail?.trim()) {
+      newErrors.detail = 'Detail is required'
+    }
+
     // Image validation
     if (!item.image_review && !selectedFileImage) {
       newErrors.image_review = 'Image is required'
@@ -166,25 +174,26 @@ export default function TableWithDrawer() {
     }
 
     const { valid, errors: validationErrors } = validateItem(updatedItem)
-    setIsUpdating(true)
-
-    if (selectedFileImage) {
-      const [imageUrl] = await uploadFiles([selectedFileImage as File])
-      await deleteFile(selectedItem?.image_review?.fileId as string)
-      updatedItem.image_review = {
-        url: imageUrl.url,
-        fileId: imageUrl.fileId
-      }
-    }
     if (!valid) {
       setErrors(validationErrors)
       toast.error('Please fill in all fields correctly')
       return
     }
+
+    setIsUpdating(true)
+
     try {
-      console.log({ updatedItem })
-      const { title, description, _id, image_review } = updatedItem
-      await updateProject({ title, description, _id, image_review })
+      if (selectedFileImage) {
+        const [imageUrl] = await uploadFiles([selectedFileImage as File])
+        await deleteFile(selectedItem?.image_review?.fileId as string)
+        updatedItem.image_review = {
+          url: imageUrl.url,
+          fileId: imageUrl.fileId
+        }
+      }
+
+      const { title, description, _id, image_review, detail } = updatedItem
+      await updateProject({ title, description, _id, image_review, detail })
       setItems(items.map((item) => (item._id === updatedItem._id ? updatedItem : item)))
       setIsSheetOpen(false)
       toast.success('Item updated successfully')
@@ -263,12 +272,12 @@ export default function TableWithDrawer() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                console.log(e.currentTarget, 'asdf')
                 const formData = new FormData(e.currentTarget)
                 const newItem = {
                   title: formData.get('title') as string,
                   description: formData.get('description') as string,
-                  image_review: selectedFileImage
+                  image_review: selectedFileImage,
+                  detail: formData.get('detail') as string
                 }
                 handleAdd(newItem)
               }}
@@ -337,7 +346,13 @@ export default function TableWithDrawer() {
                   )}
                 </div>
                 <div className='space-y-2'>
-                  <RichEditor />
+                  <Label htmlFor='detail'>Detail Content</Label>
+                  <RichEditor
+                    onChange={(value) => {
+                      setProjectDetail(value)
+                    }}
+                  />
+                  <input type='hidden' name='detail' value={projectDetail || ''} />
                 </div>
               </div>
               <DialogFooter>
@@ -459,6 +474,19 @@ export default function TableWithDrawer() {
                                     <Image src={imagePreview} alt='Preview' width={400} height={400} className='size-full object-cover' />
                                   </div>
                                 )}
+                              </div>
+                              <div className='space-y-2'>
+                                <Label htmlFor='detail'>Detail Content</Label>
+                                <RichEditor
+                                  value={selectedItem?.detail || ''}
+                                  onChange={(value) => {
+                                    setSelectedItem((prev) => ({
+                                      ...prev!,
+                                      detail: value
+                                    }))
+                                  }}
+                                />
+                                <input type='hidden' name='detail' value={selectedItem.detail} />
                               </div>
                             </div>
                             <div className='mt-4 flex justify-end space-x-2'>

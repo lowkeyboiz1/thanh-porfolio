@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Loader2 } from 'lucide-react'
+import Header from '@/layouts/header/Header'
 
 const ProjectDetail = () => {
   const [projectDetail, setProjectDetail] = useState<TPoject | null>(null)
@@ -45,15 +46,18 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div className='flex min-h-screen flex-col gap-8 py-20 page'>
-      <div className='w-full overflow-hidden rounded-lg'>
-        <Image src={projectDetail.image_review.url} alt={projectDetail.title} width={1000} height={1000} className='object-cover' priority />
+    <>
+      <Header />
+      <div className='flex min-h-screen flex-col gap-8 py-20 page'>
+        <div className='max-h-[500px] w-full overflow-hidden rounded-lg'>
+          <Image src={projectDetail.image_review.url} alt={projectDetail.title} width={2000} height={2000} className='object-cover' priority />
+        </div>
+        <div className='flex flex-col gap-4'>
+          <h1 className='gradient-text py-2 text-4xl font-bold xl:text-6xl'>{projectDetail.title}</h1>
+          <p className='max-w-2xl text-lg text-gray-400'>{projectDetail.description}</p>
+        </div>
       </div>
-      <div className='flex flex-col gap-4'>
-        <h1 className='gradient-text py-2 text-4xl font-bold xl:text-6xl'>{projectDetail.title}</h1>
-        <p className='max-w-2xl text-lg text-gray-400'>{projectDetail.description}</p>
-      </div>
-    </div>
+    </>
   )
 }
 

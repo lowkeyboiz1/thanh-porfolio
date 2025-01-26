@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Link, Loader2, Upload } from 'lucide-react'
+import { Link, Loader2, Upload, Youtube, Palette, Type } from 'lucide-react'
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
 import { chainMethods } from '@/utils/chainMethods'
 
@@ -20,7 +20,15 @@ interface Props {
 
 const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
   const [url, setUrl] = useState<string>('')
+  const [youtubeUrl, setYoutubeUrl] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isYoutubeDialogOpen, setIsYoutubeDialogOpen] = useState<boolean>(false)
+  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState<boolean>(false)
+  const [linkUrl, setLinkUrl] = useState<string>('')
+  const [isColorDialogOpen, setIsColorDialogOpen] = useState<boolean>(false)
+  const [selectedColor, setSelectedColor] = useState<string>('#000000')
+  const [isFontSizeDialogOpen, setIsFontSizeDialogOpen] = useState<boolean>(false)
+  const [fontSize, setFontSize] = useState<string>('16')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]) // Track uploaded files
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -35,7 +43,11 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     { name: 'left', icon: <AlignLeftIcon /> }, // Special: text align left
     { name: 'center', icon: <AlignCenterIcon /> }, // Special: text align center
     { name: 'right', icon: <AlignRightIcon /> }, // Special: text align right
-    { name: 'upload', icon: <ImageIcon /> } // Special: insert image
+    { name: 'link', icon: <Link /> }, // Special: insert link
+    { name: 'color', icon: <Palette /> }, // Special: text color
+    { name: 'fontSize', icon: <Type /> }, // Special: font size
+    { name: 'upload', icon: <ImageIcon /> }, // Special: insert image
+    { name: 'youtube', icon: <Youtube /> } // Changed to Youtube icon
   ]
   const headingOptions = [
     { name: 'p', value: 'Paragraph' },
@@ -71,8 +83,21 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
       case 'right':
         chainMethods(editor, (chain) => chain.setTextAlign('right'))
         break
+      case 'link':
+        setLinkUrl('')
+        setIsLinkDialogOpen(true)
+        break
+      case 'color':
+        setIsColorDialogOpen(true)
+        break
+      case 'fontSize':
+        setIsFontSizeDialogOpen(true)
+        break
       case 'upload':
         setIsOpen(true)
+        break
+      case 'youtube':
+        setIsYoutubeDialogOpen(true)
         break
       default:
         console.warn(`Unknown tool: ${name}`)
@@ -163,6 +188,14 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     setUrl(e.target.value)
   }
 
+  const handleYoutubeUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setYoutubeUrl(e.target.value)
+  }
+
+  const handleLinkUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLinkUrl(e.target.value)
+  }
+
   const handleUrlSubmit = async () => {
     if (!url || !editor) return
     setIsLoading(true)
@@ -173,6 +206,44 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
       console.error('Error setting image:', error)
     } finally {
       setUrl('')
+      setIsLoading(false)
+    }
+  }
+
+  const handleLinkSubmit = () => {
+    if (!linkUrl || !editor) return
+    chainMethods(editor, (chain) => chain.setLink({ href: linkUrl }))
+    setLinkUrl('')
+    setIsLinkDialogOpen(false)
+  }
+
+  const handleColorSubmit = () => {
+    if (!editor) return
+    console.log({ selectedColor })
+    chainMethods(editor, (chain) => chain.setColor(selectedColor))
+    setIsColorDialogOpen(false)
+  }
+
+  const handleFontSizeSubmit = () => {
+    if (!editor) return
+    chainMethods(editor, (chain) => chain.setFontSize(fontSize + 'pt'))
+    setIsFontSizeDialogOpen(false)
+  }
+
+  const handleYoutubeSubmit = async () => {
+    if (!youtubeUrl || !editor) return
+    setIsLoading(true)
+    try {
+      if (youtubeUrl) {
+        editor.commands.setYoutubeVideo({
+          src: youtubeUrl
+        })
+      }
+      setIsYoutubeDialogOpen(false)
+    } catch (error) {
+      console.error('Error setting YouTube video:', error)
+    } finally {
+      setYoutubeUrl('')
       setIsLoading(false)
     }
   }
@@ -189,7 +260,7 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
   }
 
   return (
-    <div className='relative top-0 flex gap-0.5'>
+    <div className='relative top-0 flex flex-wrap gap-0.5'>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogTitle className='hidden'>Upload Image</DialogTitle>
@@ -223,6 +294,64 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
+        <DialogContent>
+          <DialogTitle>Insert Link</DialogTitle>
+          <div className='p-6'>
+            <div className='flex items-center space-x-2'>
+              <Input type='url' placeholder='Enter URL' value={linkUrl} onChange={handleLinkUrlChange} className='flex-grow' />
+              <Button onClick={handleLinkSubmit} disabled={!linkUrl} className='bg-blue-500 text-white hover:bg-blue-600'>
+                <Link size={20} />
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isColorDialogOpen} onOpenChange={setIsColorDialogOpen}>
+        <DialogContent>
+          <DialogTitle>Choose Color</DialogTitle>
+          <div className='p-6'>
+            <div className='flex items-center space-x-2'>
+              <Input type='color' value={selectedColor} onChange={(e) => setSelectedColor(e.target.value)} className='h-10 w-20' />
+              <Button onClick={handleColorSubmit} className='bg-blue-500 text-white hover:bg-blue-600'>
+                Apply
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isFontSizeDialogOpen} onOpenChange={setIsFontSizeDialogOpen}>
+        <DialogContent>
+          <DialogTitle>Set Font Size</DialogTitle>
+          <div className='p-6'>
+            <div className='flex items-center space-x-2'>
+              <Input type='number' value={fontSize} onChange={(e) => setFontSize(e.target.value)} min='8' max='72' className='w-20' />
+              <span>pt</span>
+              <Button onClick={handleFontSizeSubmit} className='bg-blue-500 text-white hover:bg-blue-600'>
+                Apply
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isYoutubeDialogOpen} onOpenChange={setIsYoutubeDialogOpen}>
+        <DialogContent>
+          <DialogTitle>Insert YouTube Video</DialogTitle>
+          <div className='p-6'>
+            <div className='flex items-center space-x-2'>
+              <Input type='url' placeholder='Enter YouTube URL' value={youtubeUrl} onChange={handleYoutubeUrlChange} className='flex-grow' />
+              <Button onClick={handleYoutubeSubmit} disabled={!youtubeUrl || isLoading} className='bg-red-500 text-white hover:bg-red-600'>
+                {isLoading ? <Loader2 className='animate-spin' size={20} /> : <Youtube size={20} />}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Select value={getSelectedHeadingLevel()} onValueChange={handleSelectHeading}>
         <SelectTrigger className='w-[180px]'>
           <SelectValue placeholder='Select heading' />
@@ -237,7 +366,11 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
       </Select>
       {tools.map(({ name, icon }) => {
         return (
-          <ToolButton key={name} isActive={editor?.isActive(name) || editor?.isActive({ textAlign: name })} onClick={() => handleToolClick(name)}>
+          <ToolButton
+            key={name}
+            isActive={editor?.isActive(name) || editor?.isActive({ textAlign: name }) || (name === 'fontSize' && editor?.isActive('textStyle', { fontSize: fontSize + 'pt' }))}
+            onClick={() => handleToolClick(name)}
+          >
             {icon}
           </ToolButton>
         )
