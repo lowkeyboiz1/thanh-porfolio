@@ -1,7 +1,7 @@
 'use client'
 
 import { createProject, deleteProject, getProjects, updateProject } from '@/apis/projects'
-import { IProjectPayload } from '@/app/validators/projectValidator'
+import { IProjectPayload } from '@/validators/projectValidator'
 import {
   AlertDialog,
   AlertDialogAction,

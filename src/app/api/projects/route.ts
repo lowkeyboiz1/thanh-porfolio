@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { validateProjectPayload } from '@/app/validators/projectValidator'
+import { validateProjectPayload } from '@/validators/projectValidator'
 import { ValidationError, DatabaseError } from '@/lib/errors'
 import { ObjectId } from 'mongodb'
 import { createSlug } from '@/utils/createSlug'

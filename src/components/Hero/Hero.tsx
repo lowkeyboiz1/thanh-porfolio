@@ -1,31 +1,24 @@
 'use client'
 
 import Tiktok from '@/assets/Icons/tiktok.svg'
-import { Cover } from '@/components/Cover'
-import { MagneticWrapper } from '@/components/MagneticWrapper'
-import HyperText from '@/components/ui/hyper-text'
-import ScratchToReveal from '@/components/ui/scratch-to-reveal'
-import ShinyButton from '@/components/ui/shiny-button'
-import { useCursorStore } from '@/store/useCursorStore'
-import confetti from 'canvas-confetti'
-import { motion } from 'framer-motion'
-import { Mail, Linkedin } from 'lucide-react'
-import Image from 'next/image'
+import { Linkedin, Mail } from 'lucide-react'
 import Link from 'next/link'
-import { useRef } from 'react'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { MagneticWrapper } from '@/components/MagneticWrapper'
+import ShinyButton from '@/components/ui/shiny-button'
+import HyperText from '@/components/ui/hyper-text'
 
 const Hero = () => {
-  const { toggleCursor, isCursorVisible } = useCursorStore()
-  const containerRef = useRef(null)
   const socialLinks = [
     {
       name: 'Gmail',
-      url: 'mailto:your.email@gmail.com',
+      url: 'tranquangthanh808@gmail.com',
       icon: Mail
     },
     {
       name: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/your-profile',
+      url: 'linkedin.com/in/tranquangthanh-videographer',
       icon: Linkedin
     },
     {
@@ -35,137 +28,91 @@ const Hero = () => {
     }
   ]
 
-  const handleMouseOver = () => {
-    if (!isCursorVisible) return
-    toggleCursor(false)
-  }
-
-  const handleMouseLeave = () => {
-    if (isCursorVisible) return
-    toggleCursor(true)
-  }
-
-  const handleComplete = () => {
-    if (!containerRef.current) return
-    const rect = (containerRef.current as HTMLDivElement).getBoundingClientRect()
-
-    const defaults = {
-      spread: 360,
-      ticks: 50,
-      gravity: 0,
-      decay: 0.94,
-      startVelocity: 30,
-      colors: ['FFE400', 'FFBD00', 'E89400', 'FFCA6C', 'FDFFB8']
-    }
-
-    confetti({
-      ...defaults,
-      particleCount: 40,
-      scalar: 1.2,
-      shapes: ['star'],
-      origin: {
-        x: (rect.left + rect.right) / 2 / window.innerWidth,
-        y: (rect.top + rect.bottom) / 2 / window.innerHeight
-      }
-    })
-
-    confetti({
-      ...defaults,
-      particleCount: 30,
-      scalar: 0.75,
-      shapes: ['circle'],
-      origin: {
-        x: (rect.left + rect.right) / 2 / window.innerWidth,
-        y: (rect.top + rect.bottom) / 2 / window.innerHeight
-      }
-    })
-  }
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
   return (
-    <div
-      id='home'
-      className='grid items-start justify-center gap-10 page lg:grid-cols-3 lg:justify-start lg:py-10 2xl:space-y-10 2xl:py-44'
-      onMouseOver={handleMouseOver}
-      onMouseLeave={handleMouseLeave}
-    >
-      <motion.div initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }} className='col-span-2 2xl:space-y-6'>
-        <h1 className='3xl:7xl relative z-20 mt-6 max-w-7xl bg-gradient-to-b from-neutral-800 via-neutral-700 to-neutral-700 bg-clip-text py-6 text-4xl font-semibold text-transparent dark:from-neutral-800 dark:via-white dark:to-white md:text-4xl lg:text-5xl xl:text-6xl'>
-          Hi, I&apos;m <Cover>Vika</Cover>, <br />a{' '}
-          <span className='relative'>
-            <span className='text-white'>Frontend Developer</span>
-            <motion.div
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: '100%' }}
-              transition={{ duration: 0.3, delay: 0.4 }}
-              className='absolute -bottom-1 left-0 h-2 rounded-full bg-default bg-gradient-to-r from-default to-[#ff8c00]'
-            />
-          </span>
-        </h1>
-        <motion.div
-          ref={containerRef}
-          className='relative w-full'
-          initial={{ opacity: 0, x: -100, scale: 0.5, rotate: -45 }}
-          animate={{ opacity: 1, x: 0, scale: 1, rotate: 0 }}
-          transition={{ duration: 0.4 }}
+    <div className='grid w-full justify-center py-28 page lg:grid-cols-2'>
+      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className='flex flex-col'>
+        <div className='flex flex-col gap-2'>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.25, ease: 'easeOut' }}
+            className='mb-2 text-lg font-medium text-blue-500 sm:text-xl'
+          >
+            Hi, my name is
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.25, ease: 'easeOut' }}
+            className='mb-4 text-4xl font-bold text-white sm:text-5xl md:text-6xl'
+          >
+            Tran Quang Thanh
+          </motion.h1>
+        </div>
+
+        <motion.span
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.25, ease: 'easeOut' }}
+          className='mb-8 font-mono text-xl text-gray-400 sm:text-2xl md:text-3xl'
         >
-          <div className='flex w-full items-center justify-center overflow-hidden rounded-2xl border-2 lg:hidden'>
-            <div className='size-full'>
-              <Image src='/hero.jpg' alt='hero' width={360} height={360} className='size-full object-cover' />
-            </div>
+          I&apos;m a <TextUnderline delay={0.8} text='videographer' /> and <TextUnderline delay={1} text='video editor' /> based in Ho Chi Minh City.
+        </motion.span>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.8, ease: 'easeOut' }} className='flex flex-col gap-4'>
+          <div className='flex gap-6'>
+            {socialLinks.map((link, index) => (
+              <motion.div key={link.name} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 + index * 0.1, duration: 0.8, ease: 'easeOut' }}>
+                <MagneticWrapper>
+                  <Link href={link.url} target='_blank' className='group p-10'>
+                    {link.name === 'Tiktok' ? (
+                      <div className='size-[26px]'>
+                        <Image src={link.icon} alt='Tiktok Icon' width={30} height={30} className='size-full duration-200 group-hover:text-default' />
+                      </div>
+                    ) : (
+                      <link.icon className='size-[30px] duration-200 group-hover:text-default' />
+                    )}
+                  </Link>
+                </MagneticWrapper>
+              </motion.div>
+            ))}
           </div>
+          <div className='flex items-center justify-center lg:hidden'>
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.4, duration: 0.8, ease: 'easeOut' }} className='size-[500px]'>
+              <Image src='/test.png' alt='Hero' width={500} height={500} className='size-full rounded-lg object-cover' />
+            </motion.div>
+          </div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.6, duration: 0.8, ease: 'easeOut' }}>
+            <ShinyButton className='w-full px-6 py-2 lg:w-fit lg:px-10 lg:py-4'>
+              <HyperText delay={500} duration={400} className='text-base lg:text-xl'>
+                Let&apos;s collaborate!
+              </HyperText>
+            </ShinyButton>
+          </motion.div>
         </motion.div>
-        <div className='flex items-center gap-5'>
-          {socialLinks.map((link) => (
-            <MagneticWrapper key={link.name}>
-              <Link href={link.url} target='_blank' className='group p-10'>
-                {link.name === 'Tiktok' ? (
-                  <div className='size-[26px]'>
-                    <Image src={link.icon} alt='Tiktok Icon' width={30} height={30} className='size-full duration-200 group-hover:text-default' />
-                  </div>
-                ) : (
-                  <link.icon className='size-[30px] duration-200 group-hover:text-default' />
-                )}
-              </Link>
-            </MagneticWrapper>
-          ))}
-        </div>
-        <div onClick={() => scrollToSection('donate')}>
-          <ShinyButton className='px-10 py-4'>
-            <HyperText delay={500} duration={400} className='text-xl'>
-              Let&apos;s collaborate!
-            </HyperText>
-          </ShinyButton>
-        </div>
       </motion.div>
-      <motion.div
-        ref={containerRef}
-        className='relative w-full'
-        initial={{ opacity: 0, y: -100, scale: 0.5, rotate: -45 }}
-        animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <ScratchToReveal
-          width={360}
-          height={360}
-          minScratchPercentage={70}
-          className='hidden w-full items-center justify-center overflow-hidden rounded-2xl border-2 lg:flex'
-          onComplete={handleComplete}
-          gradientColors={['#FFA07A', '#FFA68D', '#FFD39B']}
-        >
-          <div className='size-full'>
-            <Image src='/hero.jpg' alt='hero' width={360} height={360} className='size-full object-cover' />
-          </div>
-        </ScratchToReveal>
+      <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 1, ease: 'easeOut' }} className='hidden items-center justify-center lg:flex'>
+        <div className='size-[500px]'>
+          <Image src='/test.png' alt='Hero' width={500} height={500} className='size-full rounded-lg object-cover' />
+        </div>
       </motion.div>
     </div>
   )
 }
 
 export default Hero
+
+const TextUnderline = ({ text, delay }: { text: string; delay: number }) => {
+  return (
+    <p className='relative mb-4 inline-block w-fit font-bold'>
+      {text}
+      <motion.span
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.4, ease: 'easeOut', delay }}
+        className='absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600'
+        style={{ transformOrigin: 'left' }}
+      />
+    </p>
+  )
+}

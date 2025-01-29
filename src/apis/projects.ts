@@ -1,4 +1,4 @@
-import { IProjectPayload } from '@/app/validators/projectValidator'
+import { IProjectPayload } from '@/validators/projectValidator'
 import { ApiError } from '@/lib/errors'
 import { TPoject } from '@/type'
 

@@ -38,15 +38,15 @@ const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>(({ chi
       {...animationProps}
       {...props}
       className={cn(
-        'relative rounded-lg px-6 py-2 font-medium backdrop-blur-xl transition-shadow duration-300 ease-in-out hover:shadow dark:bg-[radial-gradient(circle_at_50%_0%,rgba(255,69,0,0.1)_0%,transparent_60%)] dark:hover:shadow-[0_0_20px_rgba(255,69,0,0.2)]',
+        'relative rounded-lg px-6 py-2 font-medium backdrop-blur-xl transition-shadow duration-300 ease-in-out hover:shadow dark:bg-[radial-gradient(circle_at_50%_0%,rgba(0,255,255,0.1)_0%,transparent_60%)] dark:hover:shadow-[0_0_20px_rgba(0,255,255,0.2)]',
         className
       )}
     >
       <span
         className='relative block size-full text-sm uppercase tracking-wide text-[rgb(0,0,0,65%)] dark:font-light dark:text-[rgb(255,255,255,90%)]'
         style={{
-          maskImage: 'linear-gradient(-75deg, #123273 calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #ff8c00 calc(var(--x) + 100%))',
-          WebkitMaskImage: 'linear-gradient(-75deg, #123273 calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #ff8c00 calc(var(--x) + 100%))'
+          maskImage: 'linear-gradient(-75deg, #0066cc calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #00ffff calc(var(--x) + 100%))',
+          WebkitMaskImage: 'linear-gradient(-75deg, #0066cc calc(var(--x) + 20%), transparent calc(var(--x) + 30%), #00ffff calc(var(--x) + 100%))'
         }}
       >
         {children}
@@ -57,7 +57,7 @@ const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>(({ chi
           WebkitMaskComposite: 'destination-out',
           maskComposite: 'exclude'
         }}
-        className='absolute inset-0 z-10 block rounded-[inherit] bg-[linear-gradient(-75deg,#123273_calc(var(--x)+20%),#ff4500_calc(var(--x)+50%),#ff8c00_calc(var(--x)+100%))] p-px'
+        className='absolute inset-0 z-10 block rounded-[inherit] bg-[linear-gradient(-75deg,#0066cc_calc(var(--x)+20%),#00ccff_calc(var(--x)+50%),#00ffff_calc(var(--x)+100%))] p-px'
       ></span>
     </motion.button>
   )
