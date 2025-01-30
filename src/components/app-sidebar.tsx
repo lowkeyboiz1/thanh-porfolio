@@ -22,7 +22,8 @@ const data = {
       items: [
         {
           title: 'All Projects',
-          url: '/dashboard/projects'
+          url: '/dashboard/projects',
+          isActive: true
         },
         {
           title: 'All Messages',

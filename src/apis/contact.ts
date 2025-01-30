@@ -16,8 +16,12 @@ export const getContactMessages = async () => {
 }
 
 export const deleteContactMessage = async (id: string) => {
-  const response = await fetch(`/api/contact/${id}`, {
-    method: 'DELETE'
+  const response = await fetch(`/api/contact`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id })
   })
   return response.json()
 }
