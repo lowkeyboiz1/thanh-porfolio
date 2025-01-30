@@ -18,12 +18,12 @@ const Hero = () => {
     },
     {
       name: 'LinkedIn',
-      url: 'linkedin.com/in/tranquangthanh-videographer',
+      url: 'http://www.linkedin.com/in/tranquangthanh-videographer',
       icon: Linkedin
     },
     {
       name: 'Tiktok',
-      url: 'https://www.tiktok.com/@sheepcutee',
+      url: 'https://www.tiktok.com/@kwantanchen.filmaholic',
       icon: Tiktok
     }
   ]
@@ -83,7 +83,7 @@ const Hero = () => {
             </motion.div>
           </div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.6, duration: 0.8, ease: 'easeOut' }}>
-            <ShinyButton className='w-full px-6 py-2 lg:w-fit lg:px-10 lg:py-4'>
+            <ShinyButton className='w-full px-6 py-2 lg:w-fit lg:px-10 lg:py-4' onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
               <HyperText delay={500} duration={400} className='text-base lg:text-xl'>
                 Let&apos;s collaborate!
               </HyperText>
@@ -91,7 +91,12 @@ const Hero = () => {
           </motion.div>
         </motion.div>
       </motion.div>
-      <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 1, ease: 'easeOut' }} className='hidden items-center justify-center lg:flex'>
+      <motion.div
+        initial={{ opacity: 0, x: 40, y: 40 }}
+        animate={{ opacity: 1, x: 0, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.25, ease: 'easeOut' }}
+        className='hidden items-center justify-center lg:flex'
+      >
         <div className='size-[500px]'>
           <Image src='/test.png' alt='Hero' width={500} height={500} className='size-full rounded-lg object-cover' />
         </div>

@@ -1,17 +1,13 @@
 'use client'
 
-import { Donations } from '@/components/Donations'
+import { Contact } from '@/components/Contact'
 import { Hero } from '@/components/Hero'
-import CenteredPixelTransition from '@/components/Menu/CenteredPixelTransition'
-import Menu from '@/components/Menu/Menu'
 import { MySkills } from '@/components/MySkills'
 import { Projects } from '@/components/Projects'
 import TextRevealByWord from '@/components/ui/text-reveal'
-import { useIsMobile } from '@/hooks/use-mobile'
 import useLenis from '@/hooks/useLenis'
 import { Header } from '@/layouts/header'
 import { useCursorStore } from '@/store/useCursorStore'
-import { useEffect, useState } from 'react'
 
 export default function Home() {
   useLenis()
@@ -33,7 +29,7 @@ export default function Home() {
         </div>
       </div>
       <Projects />
-      <Donations />
+      <Contact />
     </div>
   )
 }

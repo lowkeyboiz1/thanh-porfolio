@@ -226,7 +226,7 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
 
   const handleFontSizeSubmit = () => {
     if (!editor) return
-    chainMethods(editor, (chain) => chain.setFontSize(fontSize + 'pt'))
+    // chainMethods(editor, (chain) => chain.setFontSize(fontSize + 'pt'))
     setIsFontSizeDialogOpen(false)
   }
 
