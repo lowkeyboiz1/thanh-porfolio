@@ -1,6 +1,7 @@
 'use client'
 
 import { Contact } from '@/components/Contact'
+import { Education } from '@/components/Education'
 import { Hero } from '@/components/Hero'
 import { MySkills } from '@/components/MySkills'
 import { Projects } from '@/components/Projects'
@@ -22,6 +23,7 @@ export default function Home() {
           <TextRevealByWord text='Driven by a dedicated spirit, I strive to create films that not only tell stories but also leave a lasting impact' />
         </div>
       </div>
+      <Education />
       <MySkills />
       <div className='flex flex-col gap-4'>
         <div className='z-10 flex min-h-64 items-center justify-center'>

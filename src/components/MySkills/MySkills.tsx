@@ -1,8 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
 
-import { Camera, Film, Image as ImageIcon, Music, Pen } from 'lucide-react'
-
 import { AnimatedTooltip } from '@/components/AnimatedTooltip'
 
 type TSkillItem = {
