@@ -33,6 +33,11 @@ const Contact = () => {
       toast.error('Please enter your message')
       return false
     }
+
+    if (formData.message.length > 300) {
+      toast.error('Message must be less than 300 characters')
+      return false
+    }
     return true
   }
 
@@ -86,9 +91,12 @@ const Contact = () => {
           <Input type='email' id='email' name='email' value={formData.email} onChange={handleChange} className='px-4 py-2 focus:outline-none' />
         </div>
         <div className='flex flex-col gap-2'>
-          <Label htmlFor='message' className='0 text-lg font-medium'>
-            Message
-          </Label>
+          <div className='flex items-center justify-between'>
+            <Label htmlFor='message' className='0 text-lg font-medium'>
+              Message
+            </Label>
+            <p className='text-sm text-gray-100'>{formData.message.length} / 300</p>
+          </div>
           <Textarea id='message' name='message' value={formData.message} onChange={handleChange} rows={5} className='px-4 py-2 focus:outline-none' />
         </div>
 

@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { DatabaseError, ValidationError } from '@/lib/errors'
+import { ObjectId } from 'mongodb'
 import { NextRequest, NextResponse } from 'next/server'
 
 const COLLECTION_CONTACTS_NAME = 'contacts'
@@ -86,4 +87,15 @@ export async function POST(request: NextRequest) {
     console.error('Unexpected error:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
+}
+
+export async function GET(request: NextRequest) {
+  const contacts = await db.collection(COLLECTION_CONTACTS_NAME).find().toArray()
+  return NextResponse.json(contacts)
+}
+
+export async function DELETE(request: NextRequest) {
+  const { id } = await request.json()
+  await db.collection(COLLECTION_CONTACTS_NAME).deleteOne({ _id: new ObjectId(id) })
+  return NextResponse.json({ message: 'Message deleted successfully' })
 }
