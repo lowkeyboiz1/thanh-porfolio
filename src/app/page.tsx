@@ -1,5 +1,6 @@
 'use client'
 
+import CardsStack from '@/components/CardsStack'
 import { Contact } from '@/components/Contact'
 import { Education } from '@/components/Education'
 import { Hero } from '@/components/Hero'
@@ -24,6 +25,7 @@ export default function Home() {
         </div>
       </div>
       <Education />
+
       <MySkills />
       <div className='flex flex-col gap-4'>
         <div className='z-10 flex min-h-64 items-center justify-center'>

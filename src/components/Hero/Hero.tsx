@@ -78,7 +78,7 @@ const Hero = () => {
             ))}
           </div>
           <div className='flex items-center justify-center lg:hidden'>
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.4, duration: 0.8, ease: 'easeOut' }} className='size-[500px]'>
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.4, duration: 0.8, ease: 'easeOut' }} className='size-full 2xl:size-[500px]'>
               <Image src='/test.png' alt='Hero' width={500} height={500} className='size-full rounded-lg object-cover' />
             </motion.div>
           </div>

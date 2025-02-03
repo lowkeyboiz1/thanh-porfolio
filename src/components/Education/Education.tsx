@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
+import CardsStack from '@/components/CardsStack'
 
 const Education = () => {
   return (
@@ -12,7 +13,7 @@ const Education = () => {
           The foundation of my vision. Explore the educational journey that has shaped my creative perspective.
         </div>
       </div>
-      <div className='space-y-4 lg:space-y-6'></div>
+      <CardsStack />
     </motion.div>
   )
 }
