@@ -1,6 +1,5 @@
 import { IProjectPayload } from '@/validators/projectValidator'
 import { ApiError } from '@/lib/errors'
-import { TPoject } from '@/type'
 
 export const getProjects = async () => {
   const response = await fetch('/api/projects')

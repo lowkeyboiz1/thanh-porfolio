@@ -29,7 +29,7 @@ const Hero = () => {
   ]
 
   return (
-    <div className='grid w-full justify-center py-28 page lg:grid-cols-2'>
+    <div className='grid w-full justify-center py-14 page lg:grid-cols-2 2xl:py-28'>
       <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className='flex flex-col'>
         <div className='flex flex-col gap-2'>
           <motion.p

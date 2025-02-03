@@ -4,9 +4,9 @@ UI and api detail project
 imporve footer sticky
 
 change UI follow description of Thành
-1. hero
+1. hero => done
 2. EDUCATION
-3 MY SKILLS
+3 MY SKILLS => done
 4. WORK EXPERIENCE
 5. MY LATEST PROJECTS
 6. Ready to embark on a new project? Work with me.
