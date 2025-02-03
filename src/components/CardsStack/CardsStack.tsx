@@ -76,7 +76,7 @@ const Card = ({
     offset: ['start end', 'end center']
   })
 
-  const imageScale = useTransform(scrollYProgress, [0, 1], [2, 1])
+  const imageScale = useTransform(scrollYProgress, [0, 0.5], [2, 1])
 
   return (
     <motion.div ref={containerRef} style={{ scale, top: `calc(-7vh + ${index * (100 / length - 1)}px)` }} className={`sticky flex h-dvh w-full items-center justify-center px-4 md:px-0`}>
