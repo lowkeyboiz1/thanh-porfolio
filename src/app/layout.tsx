@@ -16,8 +16,8 @@ const robotoMono = Roboto_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Vika Dev',
-  description: 'Vika Dev is a portfolio website for showcasing my projects and skills.'
+  title: 'Tran Quang Thanh',
+  description: "Tran Quang Thanh's portfolio website for showcasing my projects and skills."
 }
 
 export default function RootLayout({

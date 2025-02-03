@@ -30,7 +30,7 @@ const MySkills = () => {
   ]
 
   return (
-    <motion.div id='skills' className='flex flex-col gap-8 py-10 page lg:gap-14'>
+    <motion.div id='skills' className='flex flex-col gap-8 py-24 page lg:gap-14'>
       <div className='space-y-2'>
         <div className='gradient-text text-4xl font-bold xl:text-6xl'>My Skills</div>
         <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>

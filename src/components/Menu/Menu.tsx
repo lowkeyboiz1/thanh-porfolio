@@ -17,9 +17,11 @@ const anim = {
 
 const menuItems = [
   { label: 'Home', href: '#home' },
+  { label: 'Education', href: '#education' },
   { label: 'Skills', href: '#skills' },
+  { label: 'Experience', href: '#work-experience' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Donate', href: '#donate' }
+  { label: 'Contact', href: '#contact' }
 ]
 
 export default function Menu() {

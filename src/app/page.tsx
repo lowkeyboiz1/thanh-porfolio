@@ -7,6 +7,7 @@ import { Hero } from '@/components/Hero'
 import { MySkills } from '@/components/MySkills'
 import { Projects } from '@/components/Projects'
 import TextRevealByWord from '@/components/ui/text-reveal'
+import { WorkExperience } from '@/components/WorkExperience'
 import useLenis from '@/hooks/useLenis'
 import { Header } from '@/layouts/header'
 import { useCursorStore } from '@/store/useCursorStore'
@@ -32,6 +33,7 @@ export default function Home() {
           <TextRevealByWord text='I have a strong obsession for attention to detail.' />
         </div>
       </div>
+      <WorkExperience />
       <Projects />
       <Contact />
     </div>
