@@ -13,7 +13,7 @@ const Hero = () => {
   const socialLinks = [
     {
       name: 'Gmail',
-      url: 'tranquangthanh808@gmail.com',
+      url: 'mailto:tranquangthanh808@gmail.com',
       icon: Mail
     },
     {
