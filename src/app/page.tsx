@@ -22,17 +22,11 @@ export default function Home() {
       <Hero />
       <div className='flex flex-col gap-4'>
         <div className='z-10 flex min-h-64 items-center justify-center'>
-          <TextRevealByWord text='Driven by a dedicated spirit, I strive to create films that not only tell stories but also leave a lasting impact' />
+          <TextRevealByWord text='Driven by a dedicated spirit, I strive to create films that not only tell stories but also leave a lasting impact.' />
         </div>
       </div>
       <Education />
-
       <MySkills />
-      <div className='flex flex-col gap-4'>
-        <div className='z-10 flex min-h-64 items-center justify-center'>
-          <TextRevealByWord text='I have a strong obsession for attention to detail.' />
-        </div>
-      </div>
       <WorkExperience />
       <Projects />
       <Contact />
