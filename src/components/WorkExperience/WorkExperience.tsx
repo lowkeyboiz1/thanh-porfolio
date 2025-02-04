@@ -1,15 +1,15 @@
-import { motion } from 'framer-motion'
-import React, { useState } from 'react'
-import Image from 'next/image'
-import { useCursorStore } from '@/store/useCursorStore'
 import { useMousePosition } from '@/hooks/useMousePosition'
+import { useCursorStore } from '@/store/useCursorStore'
+import { AnimatePresence, motion } from 'framer-motion'
+import Image from 'next/image'
+import React, { memo, useState } from 'react'
 
 const experiences = [
   {
     period: '08/2024 - 12/2024',
     role: 'Creative Design Trainee',
     company: 'Sanofi',
-    image: '/sanofi.png',
+    image: '/SBlack.png',
     description: [
       "Developed <strong>nearly 30 multimedia content</strong>, including videos and communication assets, for Sanofi <strong>Southeast Asia's</strong> social media and digital channels.",
       'Developed multimedia content on the new HR model - PCOM, for distribution to over <strong>100,000 employees</strong> globally.',
@@ -52,7 +52,7 @@ const experiences = [
 const WorkExperience = () => {
   const [modal, setModal] = useState({ isActive: false, index: 1 })
   const { position } = useMousePosition()
-  console.log({ position })
+
   return (
     <div id='work-experience' className='flex cursor-none flex-col overflow-x-hidden py-24 page'>
       <div className='space-y-2'>
@@ -78,6 +78,7 @@ const WorkExperience = () => {
     </div>
   )
 }
+
 type TExperienceCard = {
   period: string
   role: string
@@ -111,7 +112,7 @@ const ExperienceCard = ({ period, role, company, image, description, index, setM
         <p className='text-sm text-white/60 duration-300 group-hover:-translate-x-2'>{period}</p>
         <div className='flex items-center gap-4'>
           <div className='size-10 lg:hidden xl:size-12'>
-            <Image src={image || '/placeholder.svg'} alt={company} height={100} width={100} className='size-full object-contain' />
+            <Image src={company === 'Sanofi' ? '/sanofi.png' : image || '/placeholder.svg'} alt={company} height={100} width={100} className='size-full object-contain' />
           </div>
           <p className='text-lg font-medium duration-300 group-hover:-translate-x-2 xl:text-2xl'>{company}</p>
         </div>
@@ -148,26 +149,30 @@ const ModalImage = ({ modal, experiences }: TModalImage) => {
     enter: { scale: 1, x: '-50%', y: '-50%', transition: { duration: 0.4, ease: [0.76, 0, 0.24, 1] } },
     closed: { scale: 0, x: '-50%', y: '-50%', transition: { duration: 0.4, ease: [0.32, 0, 0.67, 0] } }
   }
-  const { position, slowPosition } = useMousePosition()
 
   return (
-    <motion.div
-      animate={isActive ? 'enter' : 'closed'}
-      variants={scaleAnimation}
-      initial='initial'
-      className={`pointer-events-none absolute flex size-[300px] translate-x-1/2 translate-y-1/2 items-center justify-center overflow-hidden bg-white ${isActive ? 'opacity-100' : 'opacity-0'}`}
-    >
-      <div style={{ transition: 'top 0.5s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-500 ease-in-out'>
-        {experiences.map((exp, index) => {
-          const { image, company } = exp
-          return (
-            <div key={index} className='flex size-full items-center justify-center'>
-              <Image src={image} alt={company} height={200} width={200} className='h-auto object-contain' />
-            </div>
-          )
-        })}
-      </div>
-    </motion.div>
+    <AnimatePresence>
+      {isActive && (
+        <motion.div
+          animate={isActive ? 'enter' : 'closed'}
+          variants={scaleAnimation}
+          initial='initial'
+          exit='closed'
+          className='pointer-events-none absolute flex size-[300px] translate-x-1/2 translate-y-1/2 items-center justify-center overflow-hidden bg-white'
+        >
+          <div style={{ transition: 'top 0.5s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-500 ease-in-out'>
+            {experiences.map((exp, index) => {
+              const { image, company } = exp
+              return (
+                <div key={index} className='flex size-full items-center justify-center'>
+                  <Image src={image} alt={company} height={200} width={200} className='h-auto object-contain' />
+                </div>
+              )
+            })}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
-export default WorkExperience
+export default memo(WorkExperience)
