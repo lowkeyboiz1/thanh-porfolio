@@ -93,7 +93,7 @@ const TableComponent = () => {
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell className='text-center'>
+              <TableCell colSpan={4} className='text-center'>
                 <Loader2 className='mx-auto h-6 w-6 animate-spin' />
               </TableCell>
             </TableRow>
