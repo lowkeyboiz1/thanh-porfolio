@@ -54,7 +54,7 @@ const WorkExperience = () => {
   const { position } = useMousePosition()
   console.log({ position })
   return (
-    <div id='work-experience' className='flex flex-col overflow-x-hidden py-24 page'>
+    <div id='work-experience' className='flex cursor-none flex-col overflow-x-hidden py-24 page'>
       <div className='space-y-2'>
         <div className='gradient-text text-4xl font-bold xl:text-6xl'>Work Experience</div>
         <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>
@@ -155,14 +155,14 @@ const ModalImage = ({ modal, experiences }: TModalImage) => {
       animate={isActive ? 'enter' : 'closed'}
       variants={scaleAnimation}
       initial='initial'
-      className={`pointer-events-none absolute flex h-[350px] w-[400px] translate-x-1/2 translate-y-1/2 items-center justify-center overflow-hidden bg-white ${isActive ? 'opacity-100' : 'opacity-0'}`}
+      className={`pointer-events-none absolute flex size-[300px] translate-x-1/2 translate-y-1/2 items-center justify-center overflow-hidden bg-white ${isActive ? 'opacity-100' : 'opacity-0'}`}
     >
       <div style={{ transition: 'top 0.5s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-500 ease-in-out'>
         {experiences.map((exp, index) => {
           const { image, company } = exp
           return (
             <div key={index} className='flex size-full items-center justify-center'>
-              <Image src={image} alt={company} height={100} width={100} className='h-auto object-contain' />
+              <Image src={image} alt={company} height={200} width={200} className='h-auto object-contain' />
             </div>
           )
         })}
