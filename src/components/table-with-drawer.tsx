@@ -61,6 +61,7 @@ export default function TableWithDrawer() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [selectedFileImage, setSelectedFileImage] = useState<File | null>(null)
   const [projectDetail, setProjectDetail] = useState<string | null>(null)
+  const [projectDetailHTMLCreate, setProjectDetailHTMLCreate] = useState<string | null>(null)
 
   const [errors, setErrors] = useState({
     title: '',
@@ -269,6 +270,7 @@ export default function TableWithDrawer() {
   const handleAdd = async (newItem: IProjectPayload) => {
     const { valid, errors: validationErrors } = validateItem(newItem)
     if (!valid) {
+      console.log({ valid, errors })
       setErrors(validationErrors)
       toast.error('Please fill in all fields correctly')
       return
@@ -431,8 +433,12 @@ export default function TableWithDrawer() {
                 </div>
                 <div className='space-y-2'>
                   <Label htmlFor='detail'>Detail Content</Label>
-                  <RichEditor />
-                  <input type='hidden' name='detail' value={projectDetail || ''} />
+                  <RichEditor
+                    onChange={(value) => {
+                      setProjectDetailHTMLCreate(value)
+                    }}
+                  />
+                  <input type='hidden' name='detail' value={projectDetailHTMLCreate || ''} />
                 </div>
               </div>
               <DialogFooter>

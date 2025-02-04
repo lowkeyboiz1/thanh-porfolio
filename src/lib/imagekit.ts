@@ -95,3 +95,26 @@ export const deleteFile = async (fileId: string) => {
     throw new Error(`Delete failed: ${error.message}`)
   }
 }
+
+export const getAllFiles = async () => {
+  try {
+    const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY!
+    const authString = Buffer.from(`${privateKey}:`).toString('base64')
+
+    const url = 'https://api.imagekit.io/v1/files'
+    const options = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Basic ${authString}`
+      }
+    }
+
+    const response = await fetch(url, options)
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error getting files:', error)
+    throw error
+  }
+}

@@ -102,25 +102,21 @@ const ExperienceCard = ({ period, role, company, image, description, index, setM
         setModal({ isActive: false, index })
         toggleCursor(true)
       }}
-      initial={{ x: index % 2 === 0 ? -100 : 100 }}
-      whileInView={{ x: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.5, delay: index * 0.25 }}
-      className='group flex flex-col gap-8 py-12 duration-300 hover:opacity-60 md:flex-row md:gap-16 xl:py-24'
+      className='group flex flex-col gap-8 py-12 duration-200 hover:opacity-60 md:flex-row md:gap-16 xl:py-24'
     >
-      <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }} className='space-y-4 md:w-1/3'>
-        <p className='text-sm text-white/60 duration-300 group-hover:-translate-x-2'>{period}</p>
+      <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.2 }} className='space-y-4 md:w-1/3'>
+        <p className='text-sm text-white/60 duration-200 group-hover:-translate-x-2'>{period}</p>
         <div className='flex items-center gap-4'>
           <div className='size-10 lg:hidden xl:size-12'>
-            <Image src={company === 'Sanofi' ? '/sanofi.png' : image || '/placeholder.svg'} alt={company} height={100} width={100} className='size-full object-contain' />
+            <Image src={company === 'Sanofi' ? '/sanofi.png' : image || '/placeholder.svg'} alt={company} height={100} width={100} className='size-full object-contain' priority />
           </div>
-          <p className='text-lg font-medium duration-300 group-hover:-translate-x-2 xl:text-2xl'>{company}</p>
+          <p className='text-lg font-medium duration-200 group-hover:-translate-x-2 xl:text-2xl'>{company}</p>
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, x: 100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }} className='space-y-4 md:w-2/3'>
-        <h3 className='text-lg font-medium duration-300 group-hover:translate-x-2'>{role}</h3>
-        <ul className='list-disc space-y-2 pl-4 leading-relaxed text-white/80 duration-300 group-hover:translate-x-2'>
+      <motion.div initial={{ opacity: 0, x: 100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.2 }} className='space-y-4 md:w-2/3'>
+        <h3 className='text-lg font-medium duration-200 group-hover:translate-x-2'>{role}</h3>
+        <ul className='list-disc space-y-2 pl-4 leading-relaxed text-white/80 duration-200 group-hover:translate-x-2'>
           {description.map((desc, i) => (
             <li key={i} dangerouslySetInnerHTML={{ __html: desc }} />
           ))}
@@ -160,12 +156,12 @@ const ModalImage = ({ modal, experiences }: TModalImage) => {
           exit='closed'
           className='pointer-events-none absolute flex size-[300px] translate-x-1/2 translate-y-1/2 items-center justify-center overflow-hidden bg-white'
         >
-          <div style={{ transition: 'top 0.3s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-500 ease-in-out'>
+          <div style={{ transition: 'top 0.25s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-300 ease-in-out'>
             {experiences.map((exp, index) => {
               const { image, company } = exp
               return (
                 <div key={index} className='flex size-full items-center justify-center'>
-                  <Image src={image} alt={company} height={200} width={200} className='h-auto object-contain' />
+                  <Image src={image} alt={company} height={200} width={200} className='h-auto object-contain' priority />
                 </div>
               )
             })}

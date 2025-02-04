@@ -1,7 +1,7 @@
 import ToolButton from '@/components/RichEditor/ToolButton'
-import { ChainedCommands, Editor } from '@tiptap/react'
+import { ChainedCommands, Editor, useEditor } from '@tiptap/react'
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, CodeIcon, DotIcon, ImageIcon, ItalicIcon, ListOrderedIcon, StrikethroughIcon, UnderlineIcon } from 'lucide-react'
-import { ChangeEventHandler, FC } from 'react'
+import { ChangeEventHandler, FC, useEffect } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
@@ -11,14 +11,16 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Link, Loader2, Upload, Youtube, Palette, Type } from 'lucide-react'
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
 import { chainMethods } from '@/utils/chainMethods'
+import { ImageKitFile } from '@/type'
 
 interface Props {
   editor: Editor | null
+  listImageKits: ImageKitFile[]
   onImageUpload?: (file: File) => Promise<string> // Add callback for image upload
   onSave?: (content: string, files: File[]) => Promise<void> // Add callback for saving content
 }
 
-const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
+const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits }) => {
   const [url, setUrl] = useState<string>('')
   const [youtubeUrl, setYoutubeUrl] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -267,6 +269,9 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
           <div className='rounded-xl p-6'>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <h2 className='mb-6 text-center text-2xl font-semibold'>Upload Image</h2>
+              {/* {listImageKits.map((item) => {
+                return <div key={item.fileId}>{item.name}</div>
+              })} */}
               <AnimatePresence mode='wait'>
                 <motion.div key='upload-options' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <div

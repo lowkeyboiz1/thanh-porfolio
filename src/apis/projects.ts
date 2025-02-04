@@ -63,9 +63,15 @@ export const deleteProject = async (_id: string) => {
 }
 
 export const getProjectDetail = async (id: string) => {
-  const response = await fetch(`/api/projects/${id}`)
+  const baseUrl = typeof window !== 'undefined' ? '' : process.env.NEXT_PUBLIC_FRONTEND_URL
+
+  // Construct the full URL
+  const url = `${baseUrl}/api/projects/${id}`
+  const response = await fetch(url)
+
   if (!response.ok) {
     throw new ApiError('Failed to fetch project detail')
   }
-  return response.json()
+
+  return await response.json()
 }

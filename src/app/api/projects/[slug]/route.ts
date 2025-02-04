@@ -4,7 +4,7 @@ import { COLLECTION_PROJECTS_NAME } from '@/utils/constans'
 
 export async function GET(request: NextRequest, { params }: { params: any }) {
   try {
-    const { slug } = params
+    const { slug } = await params
 
     const projectDetail = await db.collection(COLLECTION_PROJECTS_NAME).findOne({ slug })
 

@@ -20,7 +20,9 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import './rickEdior.css'
 import TextStyle from '@tiptap/extension-text-style'
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
+import { getAllFiles } from '@/lib/imagekit'
+import { ImageKitFile } from '@/type'
 
 interface RichEditorProps {
   value?: string
@@ -28,6 +30,7 @@ interface RichEditorProps {
 }
 
 const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
+  const [listImageKits, setListImageKits] = useState<ImageKitFile[]>([])
   const extensions = [
     Underline,
     BulletList,
@@ -93,9 +96,17 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
     }
   })
 
+  useEffect(() => {
+    const fetchImageKit = async () => {
+      const data = await getAllFiles()
+      setListImageKits(data)
+    }
+    fetchImageKit()
+  }, [])
+
   return (
     <div className='flex flex-col gap-2'>
-      <Tool editor={editor} />
+      <Tool editor={editor} listImageKits={listImageKits} />
       <div className='rounded-lg border border-gray-200 p-2'>
         <EditorContent editor={editor} />
       </div>
