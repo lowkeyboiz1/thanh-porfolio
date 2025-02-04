@@ -4,12 +4,12 @@ import { PinContainer } from '../PinContainer'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { typeOfProject } from '@/utils/constans'
 import { getProjects } from '@/apis/projects'
-import { TPoject } from '@/type'
+import { TProject } from '@/type'
 import { useState, useEffect } from 'react'
 
 const Projects = () => {
   const targetRef = useRef(null)
-  const [projects, setProjects] = useState<TPoject[]>([])
+  const [projects, setProjects] = useState<TProject[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const isMobile = useIsMobile()
 

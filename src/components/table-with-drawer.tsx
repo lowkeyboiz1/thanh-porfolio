@@ -200,6 +200,7 @@ export default function TableWithDrawer() {
 
   const handleUpdate = async (updatedItem: Item) => {
     // Check if anything has changed
+    console.log({ selectedItem, updatedItem })
     if (
       !selectedFileImage &&
       selectedItem?.title === updatedItem.title &&
@@ -208,7 +209,8 @@ export default function TableWithDrawer() {
       selectedItem?.category === updatedItem.category &&
       selectedItem?.year === updatedItem.year &&
       selectedItem?.scopeOfWork === updatedItem.scopeOfWork &&
-      selectedItem?.image_review?.url === updatedItem.image_review?.url
+      selectedItem?.image_review?.url === updatedItem.image_review?.url &&
+      projectDetail === updatedItem.detail
     ) {
       setIsSheetOpen(false)
       return
@@ -429,11 +431,7 @@ export default function TableWithDrawer() {
                 </div>
                 <div className='space-y-2'>
                   <Label htmlFor='detail'>Detail Content</Label>
-                  <RichEditor
-                    onChange={(value) => {
-                      setProjectDetail(value)
-                    }}
-                  />
+                  <RichEditor />
                   <input type='hidden' name='detail' value={projectDetail || ''} />
                 </div>
               </div>
@@ -490,6 +488,7 @@ export default function TableWithDrawer() {
                           size='icon'
                           onClick={() => {
                             setSelectedItem(item)
+                            setProjectDetail(item.detail)
                             setImagePreview(item.image_review?.url || null)
                           }}
                         >
@@ -623,15 +622,17 @@ export default function TableWithDrawer() {
                                 </div>
                                 <div className='space-y-2'>
                                   <Label htmlFor='detail'>Detail Content</Label>
-                                  <RichEditor
-                                    value={selectedItem?.detail || ''}
-                                    onChange={(value) => {
-                                      setSelectedItem((prev) => ({
-                                        ...prev!,
-                                        detail: value
-                                      }))
-                                    }}
-                                  />
+                                  <div className='sticky top-[200px]'>
+                                    <RichEditor
+                                      value={selectedItem?.detail || ''}
+                                      onChange={(value) => {
+                                        setSelectedItem((prev) => ({
+                                          ...prev!,
+                                          detail: value
+                                        }))
+                                      }}
+                                    />
+                                  </div>
                                   <input type='hidden' name='detail' value={selectedItem.detail} />
                                 </div>
                               </div>

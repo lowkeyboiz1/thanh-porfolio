@@ -37,7 +37,7 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
       inline: false,
       enableIFrameApi: true,
       HTMLAttributes: {
-        class: 'rounded-lg max-h-[500px] w-auto mx-auto object-cover'
+        class: 'rounded-lg w-full mx-auto object-cover'
       }
     }),
     Link,
@@ -58,7 +58,7 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
       inline: true,
       allowBase64: true,
       HTMLAttributes: {
-        class: 'rounded-lg max-h-[500px] w-auto mx-auto object-cover'
+        class: 'rounded-lg w-full mx-auto object-cover'
       }
     }),
     TextAlign.configure({
@@ -79,6 +79,11 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
     onUpdate: ({ editor }) => {
       if (onChange) {
         onChange(editor.getHTML())
+        // Kiểm tra nếu nội dung trống và chèn thẻ <br>
+        const isEmpty = editor.getText().trim() === ''
+        if (isEmpty) {
+          editor.commands.insertContent('<br>')
+        }
       }
     },
     editorProps: {
