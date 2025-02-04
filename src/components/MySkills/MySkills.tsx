@@ -54,7 +54,7 @@ const SkillCard = ({ title, items }: SkillCardProps) => {
   return (
     <div className='space-y-4 lg:space-y-6'>
       <p className='text-base font-medium tracking-widest lg:text-lg'>{title}</p>
-      <div className='flex flex-wrap gap-6 lg:gap-10'>
+      <div className='flex flex-wrap gap-6 lg:gap-8'>
         {items.map((item) => {
           return <Skill key={item.id} item={item} />
         })}
@@ -69,7 +69,7 @@ interface SkillProps {
 
 const Skill = ({ item }: SkillProps) => {
   return (
-    <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: (item.id / 100) * 3 }} viewport={{ once: true }} className='h-14'>
+    <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: (item.id / 100) * 3 }} viewport={{ once: true }} className='h-14 xl:h-16'>
       <AnimatedTooltip item={item as any} />
     </motion.div>
   )

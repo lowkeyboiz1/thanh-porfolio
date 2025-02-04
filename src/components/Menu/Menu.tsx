@@ -32,7 +32,7 @@ export default function Menu() {
   return (
     <motion.div
       style={{ display: isMenuOpen ? 'flex' : 'none' }}
-      className='fixed z-[110] flex h-dvh w-full flex-col items-center justify-center gap-6'
+      className='fixed inset-0 z-[110] flex h-dvh w-dvw flex-col items-center justify-center gap-6 bg-black xl:bg-transparent'
       variants={anim}
       initial='initial'
       animate={isMenuOpen ? 'open' : 'closed'}

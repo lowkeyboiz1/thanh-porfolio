@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
+import { useCursorStore } from '@/store/useCursorStore'
+import { useMousePosition } from '@/hooks/useMousePosition'
 
 const experiences = [
   {
@@ -48,6 +50,9 @@ const experiences = [
 ]
 
 const WorkExperience = () => {
+  const [modal, setModal] = useState({ isActive: false, index: 1 })
+  const { position } = useMousePosition()
+  console.log({ position })
   return (
     <div id='work-experience' className='flex flex-col overflow-x-hidden py-24 page'>
       <div className='space-y-2'>
@@ -56,39 +61,113 @@ const WorkExperience = () => {
           Building the foundation. Discover the diverse experiences that have fueled my creative growth.
         </div>
       </div>
-      <div className='space-y-16 divide-y-2 py-10'>
+      <div className='divide-y-2'>
         {experiences.map((exp, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.5, delay: index * 0.25 }}
-            className='flex flex-col gap-8 pt-16 md:flex-row md:gap-16'
-          >
-            <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }} className='space-y-4 md:w-1/3'>
-              <p className='text-sm text-white/60'>{exp.period}</p>
-              <div className='flex items-center gap-4'>
-                <div style={{ background: exp.company === 'Sanofi' ? 'linear-gradient(to right, #fff, #fff)' : '' }} className='relative h-12 w-12 flex-shrink-0'>
-                  <Image src={exp.image || '/placeholder.svg'} alt={exp.company} fill className='object-contain' />
-                </div>
-                <p className='text-lg font-medium xl:text-2xl'>{exp.company}</p>
-              </div>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: 100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }} className='space-y-4 md:w-2/3'>
-              <h3 className='text-lg font-medium'>{exp.role}</h3>
-              <ul className='list-disc space-y-2 pl-4 leading-relaxed text-white/80'>
-                {exp.description.map((desc, i) => (
-                  <li key={i} dangerouslySetInnerHTML={{ __html: desc }} />
-                ))}
-              </ul>
-            </motion.div>
-          </motion.div>
+          <ExperienceCard key={index} {...exp} index={index} setModal={setModal} />
         ))}
+      </div>
+      <div
+        className='pointer-events-none fixed z-[130]'
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`
+        }}
+      >
+        <ModalImage modal={modal} experiences={experiences} />
       </div>
     </div>
   )
 }
+type TExperienceCard = {
+  period: string
+  role: string
+  company: string
+  image: string
+  description: string[]
+  index: number
+  setModal: React.Dispatch<React.SetStateAction<{ isActive: boolean; index: number }>>
+}
 
+const ExperienceCard = ({ period, role, company, image, description, index, setModal }: TExperienceCard) => {
+  const { toggleCursor } = useCursorStore()
+
+  return (
+    <motion.div
+      onMouseEnter={() => {
+        setModal({ isActive: true, index })
+        toggleCursor(false)
+      }}
+      onMouseLeave={() => {
+        setModal({ isActive: false, index })
+        toggleCursor(true)
+      }}
+      initial={{ x: index % 2 === 0 ? -100 : 100 }}
+      whileInView={{ x: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.5, delay: index * 0.25 }}
+      className='group flex flex-col gap-8 py-12 duration-300 hover:opacity-60 md:flex-row md:gap-16 xl:py-24'
+    >
+      <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }} className='space-y-4 md:w-1/3'>
+        <p className='text-sm text-white/60 duration-300 group-hover:-translate-x-2'>{period}</p>
+        <div className='flex items-center gap-4'>
+          <div className='size-10 lg:hidden xl:size-12'>
+            <Image src={image || '/placeholder.svg'} alt={company} height={100} width={100} className='size-full object-contain' />
+          </div>
+          <p className='text-lg font-medium duration-300 group-hover:-translate-x-2 xl:text-2xl'>{company}</p>
+        </div>
+      </motion.div>
+
+      <motion.div initial={{ opacity: 0, x: 100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }} className='space-y-4 md:w-2/3'>
+        <h3 className='text-lg font-medium duration-300 group-hover:translate-x-2'>{role}</h3>
+        <ul className='list-disc space-y-2 pl-4 leading-relaxed text-white/80 duration-300 group-hover:translate-x-2'>
+          {description.map((desc, i) => (
+            <li key={i} dangerouslySetInnerHTML={{ __html: desc }} />
+          ))}
+        </ul>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+type TModalImage = {
+  modal: { isActive: boolean; index: number }
+  experiences: {
+    period: string
+    role: string
+    company: string
+    image: string
+    description: string[]
+  }[]
+}
+
+const ModalImage = ({ modal, experiences }: TModalImage) => {
+  const { isActive, index } = modal
+
+  const scaleAnimation = {
+    initial: { scale: 0, x: '-50%', y: '-50%' },
+    enter: { scale: 1, x: '-50%', y: '-50%', transition: { duration: 0.4, ease: [0.76, 0, 0.24, 1] } },
+    closed: { scale: 0, x: '-50%', y: '-50%', transition: { duration: 0.4, ease: [0.32, 0, 0.67, 0] } }
+  }
+  const { position, slowPosition } = useMousePosition()
+
+  return (
+    <motion.div
+      animate={isActive ? 'enter' : 'closed'}
+      variants={scaleAnimation}
+      initial='initial'
+      className={`pointer-events-none absolute flex h-[350px] w-[400px] translate-x-1/2 translate-y-1/2 items-center justify-center overflow-hidden bg-white ${isActive ? 'opacity-100' : 'opacity-0'}`}
+    >
+      <div style={{ transition: 'top 0.5s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-500 ease-in-out'>
+        {experiences.map((exp, index) => {
+          const { image, company } = exp
+          return (
+            <div key={index} className='flex size-full items-center justify-center'>
+              <Image src={image} alt={company} height={100} width={100} className='h-auto object-contain' />
+            </div>
+          )
+        })}
+      </div>
+    </motion.div>
+  )
+}
 export default WorkExperience

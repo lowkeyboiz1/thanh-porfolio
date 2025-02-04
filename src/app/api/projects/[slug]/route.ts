@@ -7,7 +7,7 @@ export async function GET(
   context: any // Use `context` explicitly and type it correctly
 ) {
   try {
-    const { slug } = context.params // Access `slug` from the context
+    const { slug } = context.params
     const projectDetail = await db.collection(COLLECTION_PROJECTS_NAME).findOne({ slug })
 
     if (!projectDetail) {

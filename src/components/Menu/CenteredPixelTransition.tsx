@@ -53,7 +53,7 @@ export default function CenteredPixelTransition({ dimensions }: { dimensions: { 
   }
 
   return (
-    <div className='pointer-events-none fixed z-[100] flex h-dvh w-full flex-col overflow-hidden'>
+    <div className='pointer-events-none fixed z-[100] hidden h-dvh w-full flex-col overflow-hidden xl:flex'>
       {[...Array(10)].map((_, index) => {
         return (
           <div key={index} className={'flex h-[10vh] w-full'}>
