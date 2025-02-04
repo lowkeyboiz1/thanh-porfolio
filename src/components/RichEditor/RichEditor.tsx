@@ -91,7 +91,7 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
   return (
     <div className='flex flex-col gap-2'>
       <Tool editor={editor} />
-      <div className='max-h-[400px] min-h-[100px] overflow-y-auto rounded-lg border border-gray-200 p-2'>
+      <div className='rounded-lg border border-gray-200 p-2'>
         <EditorContent editor={editor} />
       </div>
     </div>

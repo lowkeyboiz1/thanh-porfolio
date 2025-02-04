@@ -23,7 +23,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { deleteFile, uploadFiles } from '@/lib/imagekit'
 import { motion } from 'framer-motion'
-import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon, Loader2, Pencil, Plus, X } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon, Eye, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -32,6 +32,10 @@ interface Item {
   _id: string
   title: string
   description: string
+  client: string
+  category: string
+  year: string
+  scopeOfWork: string
   image_review: {
     url: string
     fileId: string
@@ -51,7 +55,7 @@ export default function TableWithDrawer() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -61,6 +65,10 @@ export default function TableWithDrawer() {
   const [errors, setErrors] = useState({
     title: '',
     description: '',
+    client: '',
+    category: '',
+    year: '',
+    scopeOfWork: '',
     image_review: '',
     detail: ''
   })
@@ -131,6 +139,10 @@ export default function TableWithDrawer() {
     const newErrors = {
       title: '',
       description: '',
+      client: '',
+      category: '',
+      year: '',
+      scopeOfWork: '',
       image_review: '',
       detail: ''
     }
@@ -153,6 +165,26 @@ export default function TableWithDrawer() {
       newErrors.description = 'Description must be less than 500 characters'
     }
 
+    // Client validation
+    if (!item.client?.trim()) {
+      newErrors.client = 'Client is required'
+    }
+
+    // Category validation
+    if (!item.category?.trim()) {
+      newErrors.category = 'Category is required'
+    }
+
+    // Year validation
+    if (!item.year?.trim()) {
+      newErrors.year = 'Year is required'
+    }
+
+    // Scope of Work validation
+    if (!item.scopeOfWork?.trim()) {
+      newErrors.scopeOfWork = 'Scope of Work is required'
+    }
+
     if (!item.detail?.trim()) {
       newErrors.detail = 'Detail is required'
     }
@@ -168,7 +200,16 @@ export default function TableWithDrawer() {
 
   const handleUpdate = async (updatedItem: Item) => {
     // Check if anything has changed
-    if (!selectedFileImage && selectedItem?.title === updatedItem.title && selectedItem?.description === updatedItem.description && selectedItem?.image_review?.url === updatedItem.image_review?.url) {
+    if (
+      !selectedFileImage &&
+      selectedItem?.title === updatedItem.title &&
+      selectedItem?.description === updatedItem.description &&
+      selectedItem?.client === updatedItem.client &&
+      selectedItem?.category === updatedItem.category &&
+      selectedItem?.year === updatedItem.year &&
+      selectedItem?.scopeOfWork === updatedItem.scopeOfWork &&
+      selectedItem?.image_review?.url === updatedItem.image_review?.url
+    ) {
       setIsSheetOpen(false)
       return
     }
@@ -192,8 +233,8 @@ export default function TableWithDrawer() {
         }
       }
 
-      const { title, description, _id, image_review, detail } = updatedItem
-      await updateProject({ title, description, _id, image_review, detail })
+      const { title, description, client, category, year, scopeOfWork, _id, image_review, detail } = updatedItem
+      await updateProject({ title, description, client, category, year, scopeOfWork, _id, image_review, detail })
       setItems(items.map((item) => (item._id === updatedItem._id ? updatedItem : item)))
       setIsSheetOpen(false)
       toast.success('Item updated successfully')
@@ -206,7 +247,7 @@ export default function TableWithDrawer() {
   }
 
   const handleDelete = async (itemId: string) => {
-    setIsDeleting(true)
+    setDeletingItemId(itemId)
     try {
       await deleteProject(itemId)
       setItems(items.filter((item) => item._id !== itemId))
@@ -219,7 +260,7 @@ export default function TableWithDrawer() {
       toast.error('Failed to delete item')
       console.error('Error deleting item:', error)
     } finally {
-      setIsDeleting(false)
+      setDeletingItemId(null)
     }
   }
 
@@ -264,18 +305,23 @@ export default function TableWithDrawer() {
           <DialogTrigger asChild>
             <Button>Add new project</Button>
           </DialogTrigger>
-          <DialogContent className='w-full max-w-full lg:max-w-[80%] 2xl:max-w-[50%]'>
+          <DialogContent className='max-h-[calc(100vh-100px)] w-full max-w-full lg:max-w-[80%] 2xl:max-w-[50%]'>
             <DialogHeader>
               <DialogTitle>Add new project</DialogTitle>
               <DialogDescription>Fill in the details for the new project.</DialogDescription>
             </DialogHeader>
             <form
+              className='h-full max-h-[calc(100vh-200px)] overflow-y-auto px-1'
               onSubmit={(e) => {
                 e.preventDefault()
                 const formData = new FormData(e.currentTarget)
                 const newItem = {
                   title: formData.get('title') as string,
                   description: formData.get('description') as string,
+                  client: formData.get('client') as string,
+                  category: formData.get('category') as string,
+                  year: formData.get('year') as string,
+                  scopeOfWork: formData.get('scopeOfWork') as string,
                   image_review: selectedFileImage,
                   detail: formData.get('detail') as string
                 }
@@ -298,6 +344,42 @@ export default function TableWithDrawer() {
                     onChange={() => setErrors((prev) => ({ ...prev, description: '' }))}
                   />
                   {errors.description && <p className='text-sm text-red-500'>{errors.description}</p>}
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='add-client'>Client</Label>
+                  <Input id='add-client' name='client' placeholder='Enter client' className={errors.client ? 'border-red-500' : ''} onChange={() => setErrors((prev) => ({ ...prev, client: '' }))} />
+                  {errors.client && <p className='text-sm text-red-500'>{errors.client}</p>}
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='add-category'>Category</Label>
+                  <Input
+                    id='add-category'
+                    name='category'
+                    placeholder='Enter category'
+                    className={errors.category ? 'border-red-500' : ''}
+                    onChange={() => setErrors((prev) => ({ ...prev, category: '' }))}
+                  />
+                  {errors.category && <p className='text-sm text-red-500'>{errors.category}</p>}
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='add-year'>Year</Label>
+                  <Input id='add-year' name='year' placeholder='Enter year' className={errors.year ? 'border-red-500' : ''} onChange={() => setErrors((prev) => ({ ...prev, year: '' }))} />
+                  {errors.year && <p className='text-sm text-red-500'>{errors.year}</p>}
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='add-scopeOfWork'>Scope of Work</Label>
+                  <Input
+                    id='add-scopeOfWork'
+                    name='scopeOfWork'
+                    placeholder='Enter scope of work'
+                    className={errors.scopeOfWork ? 'border-red-500' : ''}
+                    onChange={() => setErrors((prev) => ({ ...prev, scopeOfWork: '' }))}
+                  />
+                  {errors.scopeOfWork && <p className='text-sm text-red-500'>{errors.scopeOfWork}</p>}
                 </div>
 
                 <div className='space-y-2'>
@@ -370,6 +452,10 @@ export default function TableWithDrawer() {
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Description</TableHead>
+            <TableHead>Client</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Year</TableHead>
+            <TableHead>Scope of Work</TableHead>
             <TableHead>Image</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -377,7 +463,7 @@ export default function TableWithDrawer() {
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={4} className='text-center'>
+              <TableCell colSpan={8} className='text-center'>
                 <Loader2 className='mx-auto h-6 w-6 animate-spin' />
               </TableCell>
             </TableRow>
@@ -386,138 +472,199 @@ export default function TableWithDrawer() {
               <TableRow key={index}>
                 <TableCell>{item.title}</TableCell>
                 <TableCell>{item.description}</TableCell>
+                <TableCell>{item.client}</TableCell>
+                <TableCell>{item.category}</TableCell>
+                <TableCell>{item.year}</TableCell>
+                <TableCell>{item.scopeOfWork}</TableCell>
                 <TableCell>
                   <div className='size-[100px] overflow-hidden rounded-lg'>
                     <Image src={item?.image_review?.url || ''} alt='Project Image' width={300} height={300} className='size-full object-cover' />
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                    <SheetTrigger asChild>
-                      <Button
-                        variant='outline'
-                        onClick={() => {
-                          setSelectedItem(item)
-                          setImagePreview(item.image_review?.url || null)
-                        }}
-                      >
-                        View Details
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side='right' className='!max-w-[calc(100vw-400px)]'>
-                      <SheetHeader>
-                        <SheetTitle>Project Details</SheetTitle>
-                        <SheetDescription>View and edit project details</SheetDescription>
-                      </SheetHeader>
-                      {selectedItem && (
-                        <div className='w-full py-4'>
-                          <form
-                            onSubmit={(e) => {
-                              e.preventDefault()
-                              const formData = new FormData(e.currentTarget)
-                              const updatedItem = {
-                                ...selectedItem,
-                                title: formData.get('title') as string,
-                                description: formData.get('description') as string,
-                                detail: formData.get('detail') as string
-                              }
-                              handleUpdate(updatedItem)
-                            }}
-                          >
-                            <div className='space-y-4'>
-                              <div>
-                                <Label htmlFor='title'>Title</Label>
-                                <Input
-                                  id='title'
-                                  name='title'
-                                  defaultValue={selectedItem.title}
-                                  className={errors.title ? 'border-red-500' : ''}
-                                  onChange={() => setErrors((prev) => ({ ...prev, title: '' }))}
-                                />
-                                {errors.title && <p className='text-sm text-red-500'>{errors.title}</p>}
-                              </div>
+                  <div className='flex gap-2'>
+                    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                      <SheetTrigger asChild>
+                        <Button
+                          variant='outline'
+                          size='icon'
+                          onClick={() => {
+                            setSelectedItem(item)
+                            setImagePreview(item.image_review?.url || null)
+                          }}
+                        >
+                          <Eye className='h-4 w-4' />
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent side='right' className='!max-w-[calc(100vw-400px)]'>
+                        <SheetHeader>
+                          <SheetTitle>Project Detail #{selectedItem?.title}</SheetTitle>
+                          <SheetDescription>View and edit project detail</SheetDescription>
+                        </SheetHeader>
+                        {selectedItem && (
+                          <div className='w-full py-4'>
+                            <form
+                              className='h-full max-h-[calc(100vh-200px)] overflow-y-auto px-1'
+                              onSubmit={(e) => {
+                                e.preventDefault()
+                                const formData = new FormData(e.currentTarget)
+                                const updatedItem = {
+                                  ...selectedItem,
+                                  title: formData.get('title') as string,
+                                  description: formData.get('description') as string,
+                                  client: formData.get('client') as string,
+                                  category: formData.get('category') as string,
+                                  year: formData.get('year') as string,
+                                  scopeOfWork: formData.get('scopeOfWork') as string,
+                                  detail: formData.get('detail') as string
+                                }
+                                handleUpdate(updatedItem)
+                              }}
+                            >
+                              <div className='space-y-4'>
+                                <div>
+                                  <Label htmlFor='title'>Title</Label>
+                                  <Input
+                                    id='title'
+                                    name='title'
+                                    defaultValue={selectedItem.title}
+                                    className={errors.title ? 'border-red-500' : ''}
+                                    onChange={() => setErrors((prev) => ({ ...prev, title: '' }))}
+                                  />
+                                  {errors.title && <p className='text-sm text-red-500'>{errors.title}</p>}
+                                </div>
 
-                              <div>
-                                <Label htmlFor='description'>Description</Label>
-                                <Input
-                                  id='description'
-                                  name='description'
-                                  defaultValue={selectedItem.description}
-                                  className={errors.description ? 'border-red-500' : ''}
-                                  onChange={() => setErrors((prev) => ({ ...prev, description: '' }))}
-                                />
-                                {errors.description && <p className='text-sm text-red-500'>{errors.description}</p>}
+                                <div>
+                                  <Label htmlFor='description'>Description</Label>
+                                  <Input
+                                    id='description'
+                                    name='description'
+                                    defaultValue={selectedItem.description}
+                                    className={errors.description ? 'border-red-500' : ''}
+                                    onChange={() => setErrors((prev) => ({ ...prev, description: '' }))}
+                                  />
+                                  {errors.description && <p className='text-sm text-red-500'>{errors.description}</p>}
+                                </div>
+
+                                <div>
+                                  <Label htmlFor='client'>Client</Label>
+                                  <Input
+                                    id='client'
+                                    name='client'
+                                    defaultValue={selectedItem.client}
+                                    className={errors.client ? 'border-red-500' : ''}
+                                    onChange={() => setErrors((prev) => ({ ...prev, client: '' }))}
+                                  />
+                                  {errors.client && <p className='text-sm text-red-500'>{errors.client}</p>}
+                                </div>
+
+                                <div>
+                                  <Label htmlFor='category'>Category</Label>
+                                  <Input
+                                    id='category'
+                                    name='category'
+                                    defaultValue={selectedItem.category}
+                                    className={errors.category ? 'border-red-500' : ''}
+                                    onChange={() => setErrors((prev) => ({ ...prev, category: '' }))}
+                                  />
+                                  {errors.category && <p className='text-sm text-red-500'>{errors.category}</p>}
+                                </div>
+
+                                <div>
+                                  <Label htmlFor='year'>Year</Label>
+                                  <Input
+                                    id='year'
+                                    name='year'
+                                    defaultValue={selectedItem.year}
+                                    className={errors.year ? 'border-red-500' : ''}
+                                    onChange={() => setErrors((prev) => ({ ...prev, year: '' }))}
+                                  />
+                                  {errors.year && <p className='text-sm text-red-500'>{errors.year}</p>}
+                                </div>
+
+                                <div>
+                                  <Label htmlFor='scopeOfWork'>Scope of Work</Label>
+                                  <Input
+                                    id='scopeOfWork'
+                                    name='scopeOfWork'
+                                    defaultValue={selectedItem.scopeOfWork}
+                                    className={errors.scopeOfWork ? 'border-red-500' : ''}
+                                    onChange={() => setErrors((prev) => ({ ...prev, scopeOfWork: '' }))}
+                                  />
+                                  {errors.scopeOfWork && <p className='text-sm text-red-500'>{errors.scopeOfWork}</p>}
+                                </div>
+
+                                <div>
+                                  <Input
+                                    ref={fileInputChangeRef}
+                                    id='edit-image'
+                                    name='image'
+                                    type='file'
+                                    accept='image/*'
+                                    onChange={handleImageChange}
+                                    className={`${errors.image_review ? 'border-red-500' : ''} hidden`}
+                                  />
+                                  {errors.image_review && <p className='text-sm text-red-500'>{errors.image_review}</p>}
+                                  {imagePreview && (
+                                    <div className='relative mt-2 size-[200px] overflow-hidden rounded-lg'>
+                                      <Button
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          e.preventDefault()
+                                          fileInputChangeRef.current?.click()
+                                        }}
+                                        className='absolute right-2 top-2 size-10 rounded-full bg-black bg-opacity-50 p-1 text-white transition-colors hover:bg-black/80'
+                                      >
+                                        <Pencil className='size-4' />
+                                      </Button>
+                                      <Image src={imagePreview} alt='Preview' width={400} height={400} className='size-full object-cover' />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className='space-y-2'>
+                                  <Label htmlFor='detail'>Detail Content</Label>
+                                  <RichEditor
+                                    value={selectedItem?.detail || ''}
+                                    onChange={(value) => {
+                                      setSelectedItem((prev) => ({
+                                        ...prev!,
+                                        detail: value
+                                      }))
+                                    }}
+                                  />
+                                  <input type='hidden' name='detail' value={selectedItem.detail} />
+                                </div>
                               </div>
-                              <div>
-                                <Input
-                                  ref={fileInputChangeRef}
-                                  id='edit-image'
-                                  name='image'
-                                  type='file'
-                                  accept='image/*'
-                                  onChange={handleImageChange}
-                                  className={`${errors.image_review ? 'border-red-500' : ''} hidden`}
-                                />
-                                {errors.image_review && <p className='text-sm text-red-500'>{errors.image_review}</p>}
-                                {imagePreview && (
-                                  <div className='relative mt-2 size-[200px] overflow-hidden rounded-lg'>
-                                    <Button
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        e.preventDefault()
-                                        fileInputChangeRef.current?.click()
-                                      }}
-                                      className='absolute right-2 top-2 size-10 rounded-full bg-black bg-opacity-50 p-1 text-white transition-colors hover:bg-black/80'
-                                    >
-                                      <Pencil className='size-4' />
-                                    </Button>
-                                    <Image src={imagePreview} alt='Preview' width={400} height={400} className='size-full object-cover' />
-                                  </div>
-                                )}
+                              <div className='mt-4 flex justify-end space-x-2'>
+                                <Button type='submit' disabled={isUpdating}>
+                                  {isUpdating && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+                                  Update
+                                </Button>
                               </div>
-                              <div className='space-y-2'>
-                                <Label htmlFor='detail'>Detail Content</Label>
-                                <RichEditor
-                                  value={selectedItem?.detail || ''}
-                                  onChange={(value) => {
-                                    setSelectedItem((prev) => ({
-                                      ...prev!,
-                                      detail: value
-                                    }))
-                                  }}
-                                />
-                                <input type='hidden' name='detail' value={selectedItem.detail} />
-                              </div>
-                            </div>
-                            <div className='mt-4 flex justify-end space-x-2'>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button variant='destructive' disabled={isDeleting}>
-                                    {isDeleting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-                                    Delete
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>This action cannot be undone. This will permanently delete the item.</AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDelete(selectedItem._id)}>Delete</AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                              <Button type='submit' disabled={isUpdating}>
-                                {isUpdating && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-                                Update
-                              </Button>
-                            </div>
-                          </form>
-                        </div>
-                      )}
-                    </SheetContent>
-                  </Sheet>
+                            </form>
+                          </div>
+                        )}
+                      </SheetContent>
+                    </Sheet>
+
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant='destructive' size='icon' disabled={deletingItemId === item._id}>
+                          {deletingItemId === item._id ? <Loader2 className='h-4 w-4 animate-spin' /> : <Trash2 className='h-4 w-4' />}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>This action cannot be undone. This will permanently delete the item.</AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(item._id)}>Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </TableCell>
               </TableRow>
             ))

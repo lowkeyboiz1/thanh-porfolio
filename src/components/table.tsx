@@ -38,7 +38,8 @@ const TableComponent = () => {
   const [selectedMessage, setSelectedMessage] = useState<IItems | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null)
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
 
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
   const paginatedItems = items.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
@@ -59,7 +60,7 @@ const TableComponent = () => {
   }, [])
 
   const handleDelete = async (itemId: string) => {
-    setIsDeleting(true)
+    setDeletingItemId(itemId)
     try {
       await deleteContactMessage(itemId)
       setItems((prevItems) => prevItems.filter((item) => item._id !== itemId))
@@ -67,11 +68,12 @@ const TableComponent = () => {
         setCurrentPage(currentPage - 1)
       }
       toast.success('Message deleted successfully')
+      setIsAlertOpen(false)
     } catch (error) {
       toast.error('Failed to delete message')
       console.error('Error deleting message:', error)
     } finally {
-      setIsDeleting(false)
+      setDeletingItemId(null)
     }
   }
 
@@ -147,10 +149,10 @@ const TableComponent = () => {
                     </DialogContent>
                   </Dialog>
 
-                  <AlertDialog>
+                  <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
                     <AlertDialogTrigger asChild>
-                      <Button variant='destructive' size='icon'>
-                        <Trash2 className='h-4 w-4' />
+                      <Button variant='destructive' size='icon' disabled={deletingItemId === item._id}>
+                        {deletingItemId === item._id ? <Loader2 className='h-4 w-4 animate-spin' /> : <Trash2 className='h-4 w-4' />}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -160,8 +162,8 @@ const TableComponent = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(item._id)} disabled={isDeleting} className='bg-destructive text-destructive-foreground hover:bg-destructive/90'>
-                          {isDeleting ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Delete'}
+                        <AlertDialogAction onClick={() => handleDelete(item._id)} disabled={deletingItemId === item._id} className='bg-destructive text-destructive-foreground hover:bg-destructive/90'>
+                          Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>

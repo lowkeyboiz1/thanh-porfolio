@@ -17,7 +17,8 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: 'Tran Quang Thanh',
-  description: "Tran Quang Thanh's portfolio website for showcasing my projects and skills."
+  description: "Tran Quang Thanh's portfolio website for showcasing my projects and skills.",
+  robots: 'index, follow'
 }
 
 export default function RootLayout({

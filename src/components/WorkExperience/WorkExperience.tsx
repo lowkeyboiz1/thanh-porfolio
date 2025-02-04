@@ -146,8 +146,8 @@ const ModalImage = ({ modal, experiences }: TModalImage) => {
 
   const scaleAnimation = {
     initial: { scale: 0, x: '-50%', y: '-50%' },
-    enter: { scale: 1, x: '-50%', y: '-50%', transition: { duration: 0.4, ease: [0.76, 0, 0.24, 1] } },
-    closed: { scale: 0, x: '-50%', y: '-50%', transition: { duration: 0.4, ease: [0.32, 0, 0.67, 0] } }
+    enter: { scale: 1, x: '-50%', y: '-50%', transition: { duration: 0.2, ease: [0.76, 0, 0.24, 1] } },
+    closed: { scale: 0, x: '-50%', y: '-50%', transition: { duration: 0.2, ease: [0.32, 0, 0.67, 0] } }
   }
 
   return (
@@ -160,7 +160,7 @@ const ModalImage = ({ modal, experiences }: TModalImage) => {
           exit='closed'
           className='pointer-events-none absolute flex size-[300px] translate-x-1/2 translate-y-1/2 items-center justify-center overflow-hidden bg-white'
         >
-          <div style={{ transition: 'top 0.5s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-500 ease-in-out'>
+          <div style={{ transition: 'top 0.3s cubic-bezier(0.76, 0, 0.24, 1)', top: index * -100 + '%' }} className='absolute h-full w-full transition-[top] duration-500 ease-in-out'>
             {experiences.map((exp, index) => {
               const { image, company } = exp
               return (

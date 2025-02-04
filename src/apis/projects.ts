@@ -20,14 +20,15 @@ export const createProject = async (project: IProjectPayload) => {
 
   if (!response.ok) {
     const error = await response.json()
-    console.log({ response, error })
     throw new ApiError(error?.error || 'Failed to create project')
   }
 
   return response.json()
 }
 
-export const updateProject = async (project: IProjectPayload & { _id: string; image_review?: { url: string; fileId: string } }) => {
+export const updateProject = async (
+  project: IProjectPayload & { _id: string; image_review?: { url: string; fileId: string }; client: string; category: string; year: string; scopeOfWork: string }
+) => {
   const response = await fetch('/api/projects', {
     method: 'PUT',
     headers: {
@@ -35,10 +36,10 @@ export const updateProject = async (project: IProjectPayload & { _id: string; im
     },
     body: JSON.stringify(project)
   })
-  console.log({ response })
+
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.error || 'Failed to update project')
+    throw new ApiError(error?.error || 'Failed to update project')
   }
 
   return response.json()
@@ -55,7 +56,7 @@ export const deleteProject = async (_id: string) => {
 
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.error || 'Failed to delete project')
+    throw new ApiError(error?.error || 'Failed to delete project')
   }
 
   return response.json()
@@ -64,7 +65,7 @@ export const deleteProject = async (_id: string) => {
 export const getProjectDetail = async (id: string) => {
   const response = await fetch(`/api/projects/${id}`)
   if (!response.ok) {
-    throw new Error('Failed to fetch project detail')
+    throw new ApiError('Failed to fetch project detail')
   }
   return response.json()
 }

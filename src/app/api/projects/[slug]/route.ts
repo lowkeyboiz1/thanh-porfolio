@@ -2,12 +2,11 @@ import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 import { COLLECTION_PROJECTS_NAME } from '@/utils/constans'
 
-export async function GET(
-  request: NextRequest,
-  context: any // Use `context` explicitly and type it correctly
-) {
+export async function GET(request: NextRequest, context: { params: { slug: string } }) {
   try {
-    const { slug } = context.params
+    const params = await context.params
+    const { slug } = params
+
     const projectDetail = await db.collection(COLLECTION_PROJECTS_NAME).findOne({ slug })
 
     if (!projectDetail) {
