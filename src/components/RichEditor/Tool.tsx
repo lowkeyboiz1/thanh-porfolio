@@ -15,6 +15,7 @@ import Image from 'next/image'
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
 import { deleteFile, getAllFiles } from '@/lib/imagekit'
 import { useImageStore } from '@/store/useImageStore'
+
 interface Props {
   editor: Editor | null
   onImageUpload?: (file: File) => Promise<string> // Add callback for image upload
@@ -288,6 +289,7 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     setFileIdToDelete('')
     setIsDeletingImage(false)
   }
+
   const fetchImageKits = async () => {
     try {
       const data = await getAllFiles()

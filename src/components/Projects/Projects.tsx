@@ -1,11 +1,9 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
-import { PinContainer } from '../PinContainer'
-import { useIsMobile } from '@/hooks/use-mobile'
-import { typeOfProject } from '@/utils/constans'
 import { getProjects } from '@/apis/projects'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { TProject } from '@/type'
-import { useState, useEffect } from 'react'
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
 
 const Projects = () => {
   const targetRef = useRef(null)
@@ -32,7 +30,7 @@ const Projects = () => {
     target: targetRef
   })
 
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 32}%`])
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 55}%`])
 
   return (
     <section id='projects' ref={targetRef} className='relative h-[150vh] w-full page'>
@@ -58,17 +56,18 @@ const Projects = () => {
             <motion.div style={{ x }} className='flex h-full min-h-[500px] w-full gap-20'>
               {projects.map((project) => {
                 return (
-                  <div key={project.title} className='flex w-full items-center justify-center'>
-                    <PinContainer title={project.title} href={`/projects/${project.slug}`} containerClassName='!size-full'>
-                      <div className='flex size-[400px] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2'>
-                        <h3 className='!m-0 max-w-xs !pb-2 text-base font-bold text-slate-100'>{project.title}</h3>
-                        <div className='!m-0 !p-0 text-base font-normal'>
-                          <span className='text-slate-500'>{project.description}</span>
-                        </div>
-                        <div className='mt-4 flex w-full flex-1 rounded-lg bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500' />
-                      </div>
-                    </PinContainer>
-                  </div>
+                  // <div key={project.title} className='flex w-full items-center justify-center'>
+                  //   <PinContainer title={project.title} href={`/projects/${project.slug}`} containerClassName='!size-full'>
+                  //     <div className='flex size-[400px] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2'>
+                  //       <h3 className='!m-0 max-w-xs !pb-2 text-base font-bold text-slate-100'>{project.title}</h3>
+                  //       <div className='!m-0 !p-0 text-base font-normal'>
+                  //         <span className='text-slate-500'>{project.description}</span>
+                  //       </div>
+                  //       <div className='mt-4 flex w-full flex-1 rounded-lg bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500' />
+                  //     </div>
+                  //   </PinContainer>
+                  // </div>
+                  <ProjectItem key={project.title} project={project} />
                 )
               })}
             </motion.div>
@@ -76,6 +75,58 @@ const Projects = () => {
         </div>
       </div>
     </section>
+  )
+}
+const ProjectItem = ({ project }: { project: TProject }) => {
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+
+  const mouseXSpring = useSpring(x, {
+    stiffness: 150,
+    damping: 15
+  })
+  const mouseYSpring = useSpring(y, {
+    stiffness: 150,
+    damping: 15
+  })
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['17.5deg', '-17.5deg'])
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-17.5deg', '17.5deg'])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const element = e.currentTarget
+    const rect = element.getBoundingClientRect()
+
+    const width = rect.width
+    const height = rect.height
+
+    const mouseX = e.clientX - rect.left
+    const mouseY = e.clientY - rect.top
+
+    const xPct = (mouseX / width - 0.5) * 2
+    const yPct = (mouseY / height - 0.5) * 2
+
+    x.set(xPct * 0.3)
+    y.set(yPct * 0.3)
+  }
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => {
+        x.set(0)
+        y.set(0)
+      }}
+      style={{
+        transformStyle: 'preserve-3d',
+        rotateX: rotateX,
+        rotateY: rotateY,
+        transition: 'transform 0.3s ease-out'
+      }}
+      className='flex max-h-[440px] w-full max-w-[700px] flex-shrink-0 overflow-hidden rounded-3xl bg-blue-500'
+    >
+      <Image src={project.image_review.url} alt={project.title} width={1000} height={1000} className='size-full object-contain' />
+    </motion.div>
   )
 }
 
