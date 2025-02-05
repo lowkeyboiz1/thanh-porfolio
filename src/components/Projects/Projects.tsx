@@ -3,6 +3,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { TProject } from '@/type'
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 const Projects = () => {
@@ -34,12 +35,12 @@ const Projects = () => {
 
   return (
     <section id='projects' ref={targetRef} className='relative h-[150vh] w-full page'>
-      <div className='sticky top-40'>
+      <div className='sticky top-24 2xl:top-40'>
         <div className='gradient-text text-4xl font-bold xl:text-6xl'>My Projects</div>
         <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>
           Some things I&apos;ve built with love, expertise and a pinch of magical ingredients.
         </div>
-        <div className='flex w-full items-center overflow-hidden'>
+        <div className='mt-10 flex w-full items-center overflow-hidden'>
           {isLoading ? (
             <div className='flex h-full min-h-[500px] w-full gap-20'>
               {Array.from({ length: 4 }).map((_, i) => (
@@ -123,9 +124,10 @@ const ProjectItem = ({ project }: { project: TProject }) => {
         rotateY: rotateY,
         transition: 'transform 0.3s ease-out'
       }}
-      className='flex max-h-[440px] w-full max-w-[700px] flex-shrink-0 overflow-hidden rounded-3xl bg-blue-500'
+      className='relative flex max-h-[440px] w-full max-w-[700px] flex-shrink-0 overflow-hidden rounded-3xl bg-blue-500'
     >
-      <Image src={project.image_review.url} alt={project.title} width={1000} height={1000} className='size-full object-contain' />
+      <Link href={`/projects/${project.slug}`} className='absolute inset-0 z-10' />
+      <Image src={`${project.image_review.url}`} alt={project.title} width={1000} height={1000} className='size-full object-cover' />
     </motion.div>
   )
 }
