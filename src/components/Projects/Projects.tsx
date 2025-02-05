@@ -36,7 +36,7 @@ const Projects = () => {
     target: targetRef
   })
 
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 55}%`])
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 60}%`])
 
   return (
     <section id='projects' ref={targetRef} className='relative h-[150vh] w-full page'>
@@ -59,22 +59,25 @@ const Projects = () => {
               ))}
             </div>
           ) : (
-            <motion.div style={{ x }} className='flex h-full min-h-[500px] w-full gap-20'>
+            <motion.div
+              style={{ x }}
+              initial={{
+                opacity: 0,
+                y: 100
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0
+              }}
+              transition={{
+                duration: 0.25,
+                ease: 'easeOut'
+              }}
+              viewport={{ once: true }}
+              className='flex h-full min-h-[500px] w-full gap-20 p-2'
+            >
               {projects.map((project) => {
-                return (
-                  // <div key={project.title} className='flex w-full items-center justify-center'>
-                  //   <PinContainer title={project.title} href={`/projects/${project.slug}`} containerClassName='!size-full'>
-                  //     <div className='flex size-[400px] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2'>
-                  //       <h3 className='!m-0 max-w-xs !pb-2 text-base font-bold text-slate-100'>{project.title}</h3>
-                  //       <div className='!m-0 !p-0 text-base font-normal'>
-                  //         <span className='text-slate-500'>{project.description}</span>
-                  //       </div>
-                  //       <div className='mt-4 flex w-full flex-1 rounded-lg bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500' />
-                  //     </div>
-                  //   </PinContainer>
-                  // </div>
-                  <ProjectItem key={project.title} project={project} />
-                )
+                return <ProjectItem key={project.title} project={project} />
               })}
             </motion.div>
           )}
@@ -84,6 +87,7 @@ const Projects = () => {
   )
 }
 const ProjectItem = ({ project }: { project: TProject }) => {
+  const isMobile = useIsMobile()
   const x = useMotionValue(0)
   const y = useMotionValue(0)
 
@@ -100,6 +104,8 @@ const ProjectItem = ({ project }: { project: TProject }) => {
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-17.5deg', '17.5deg'])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return
+
     const element = e.currentTarget
     const rect = element.getBoundingClientRect()
 
@@ -120,20 +126,27 @@ const ProjectItem = ({ project }: { project: TProject }) => {
     <motion.div
       onMouseMove={handleMouseMove}
       onMouseLeave={() => {
-        x.set(0)
-        y.set(0)
+        if (!isMobile) {
+          x.set(0)
+          y.set(0)
+        }
       }}
       style={{
         transformStyle: 'preserve-3d',
-        rotateX: rotateX,
-        rotateY: rotateY,
+        rotateX: isMobile ? 0 : rotateX,
+        rotateY: isMobile ? 0 : rotateY,
         transition: 'transform 0.3s ease-out'
       }}
-      className='relative flex w-full max-w-[700px] flex-shrink-0 overflow-hidden rounded-3xl bg-blue-500'
+      className='relative flex w-full max-w-[280px] flex-shrink-0 flex-col gap-3 overflow-hidden rounded-lg border border-white/20 p-3 sm:max-w-[500px] sm:gap-4 sm:rounded-xl sm:p-4 md:max-w-[600px] md:gap-6 md:rounded-2xl md:p-6 lg:max-w-[700px] lg:gap-8 lg:rounded-3xl lg:p-8 xl:gap-10'
     >
-      <p className='absolute left-4 top-4 text-2xl font-bold text-white'>{project.title}</p>
+      <div className='flex flex-col gap-1.5 sm:gap-2 md:gap-3 lg:gap-4'>
+        <p className='text-base font-bold text-white sm:text-lg md:text-xl lg:text-2xl'>{project.title}</p>
+        <p className='line-clamp-3 min-h-[3.6em] text-xs font-normal text-white sm:min-h-[4em] sm:text-sm md:min-h-[4.5em] md:text-base'>{project.description}</p>
+      </div>
       <Link href={`/projects/${project.slug}`} className='absolute inset-0 z-10' />
-      <Image src={`${project.image_review.url}`} alt={project.title} width={1000} height={1000} className='size-full object-cover' />
+      <div className='h-full max-h-[180px] w-full overflow-hidden rounded-md sm:max-h-[220px] sm:rounded-lg md:max-h-[280px] md:rounded-xl lg:max-h-[320px] lg:rounded-2xl xl:max-h-[440px]'>
+        <Image src={`${project.image_review.url}`} alt={project.title} width={1000} height={1000} className='size-full object-cover' priority />
+      </div>
     </motion.div>
   )
 }

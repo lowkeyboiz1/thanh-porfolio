@@ -79,7 +79,7 @@ const Contact = () => {
     <motion.div id='contact' className='flex w-full flex-col items-center gap-8 py-40 page *:w-full lg:gap-14'>
       <div className='space-y-4 text-center'>
         <div className='gradient-text text-4xl font-bold xl:text-6xl'>Contact</div>
-        <h2 className='mt-2 text-center text-lg font-medium leading-[1.25] xl:text-2xl xl:leading-[2]'>Ready to embark on a new project? Work with me.</h2>
+        <h2 className='mt-2 px-10 text-center text-lg font-medium leading-[1.25] xl:text-2xl xl:leading-[2]'>Ready to embark on a new project? Work with me.</h2>
       </div>
       <form onSubmit={handleSubmit} className='mt-8 flex flex-col gap-6'>
         <div className='flex flex-col gap-2'>
