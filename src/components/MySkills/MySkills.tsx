@@ -2,6 +2,8 @@
 import { motion } from 'framer-motion'
 
 import { AnimatedTooltip } from '@/components/AnimatedTooltip'
+import { Omega } from 'lucide-react'
+import Image from 'next/image'
 
 type TSkillItem = {
   id: number
@@ -30,32 +32,37 @@ const MySkills = () => {
   ]
 
   return (
-    <motion.div id='skills' className='flex flex-col gap-8 py-24 page lg:gap-14'>
-      <div className='space-y-2'>
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className='gradient-text text-4xl font-bold xl:text-6xl'
-        >
-          My Skills
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-xl xl:text-2xl xl:leading-[2]'
-        >
-          More than just buttons. Explore the artistic and technical skills that drive my filmmaking passion.
-        </motion.div>
-      </div>
-      <div className='space-y-4 lg:space-y-6'>
-        <SkillCard title='EXPERTISE' items={expertise} />
-        <SkillCard title='TOOLS' items={tools} />
-      </div>
-    </motion.div>
+    <div className='grid grid-cols-2 gap-10 py-24 page'>
+      <motion.div id='skills' className='flex flex-col gap-8 lg:gap-14'>
+        <div className='space-y-2'>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className='gradient-text text-4xl font-bold xl:text-6xl'
+          >
+            My Skills
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-xl xl:text-2xl xl:leading-[2]'
+          >
+            More than just buttons. Explore the artistic and technical skills that drive my filmmaking passion.
+          </motion.div>
+        </div>
+        <div className='space-y-4 lg:space-y-6'>
+          <SkillCard title='EXPERTISE' items={expertise} />
+          <SkillCard title='TOOLS' items={tools} />
+        </div>
+      </motion.div>
+      <motion.div initial={{ opacity: 0, x: 40, scale: 0.5 }} whileInView={{ opacity: 1, x: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className='col-span-1'>
+        <Image src='/my-skills.png' alt='skills' width={1000} height={1000} className='size-full object-contain' />
+      </motion.div>
+    </div>
   )
 }
 
@@ -68,7 +75,7 @@ const SkillCard = ({ title, items }: SkillCardProps) => {
   return (
     <div className='space-y-4 lg:space-y-6'>
       <p className='text-base font-medium tracking-widest lg:text-lg'>{title}</p>
-      <div className='flex flex-wrap gap-6 lg:gap-8'>
+      <div className='flex flex-wrap gap-6'>
         {items.map((item) => {
           return <Skill key={item.id} item={item} />
         })}
