@@ -6,7 +6,7 @@ import CardsStack from '@/components/CardsStack'
 
 const educationData = [
   {
-    title: 'THE THEATRE CINEMA UNIVERSITY OF HO CHI MINH CITY',
+    title: 'THE THEATRE CINEMA UNIVERSITY <br /> OF HO CHI MINH CITY',
     description: "Bachelor's Degree in Film Directing. Studied directing techniques, cinematography, production design, film analysis, screenwriting techniques, and sound design practices.",
     courses: ['Directing Techniques', 'Cinematography', 'Production Design', 'Film Analysis', 'Screenwriting Techniques', 'Sound Design Practices'],
     role: 'Bachelor’s Degree, Film Directing',
@@ -37,10 +37,24 @@ const Education = () => {
   return (
     <motion.div id='education' className='flex flex-col gap-8 py-24 page lg:gap-14'>
       <div className='space-y-2'>
-        <div className='gradient-text text-4xl font-bold xl:text-6xl'>Education</div>
-        <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className='gradient-text text-4xl font-bold xl:text-6xl'
+        >
+          Education
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-xl xl:text-2xl xl:leading-[2]'
+        >
           The foundation of my vision. Explore the educational journey that has shaped my creative perspective.
-        </div>
+        </motion.div>
       </div>
       <div className='space-y-8'>
         <CardsStack data={educationData} />

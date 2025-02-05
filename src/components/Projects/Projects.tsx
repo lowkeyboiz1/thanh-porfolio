@@ -36,15 +36,34 @@ const Projects = () => {
     target: targetRef
   })
 
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 60}%`])
+  const smoothProgress = useSpring(scrollYProgress, {
+    damping: 50,
+    stiffness: 400
+  })
+
+  const x = useTransform(smoothProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 60}%`])
 
   return (
     <section id='projects' ref={targetRef} className='relative h-[150vh] w-full page'>
       <div className='sticky top-24 2xl:top-40'>
-        <div className='gradient-text text-4xl font-bold xl:text-6xl'>My Projects</div>
-        <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>
-          Some things I&apos;ve built with love, expertise and a pinch of magical ingredients.
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className='gradient-text py-1 text-4xl font-bold xl:text-6xl'
+        >
+          My Projects
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-2xl xl:text-2xl xl:leading-[2]'
+        >
+          Fresh off the press. Explore a showcase of my latest projects, pushing the boundaries of visual storytelling.
+        </motion.div>
         <div className='mt-10 flex w-full items-center overflow-hidden'>
           {isFetching ? (
             <div className='flex h-full min-h-[500px] w-full gap-20'>

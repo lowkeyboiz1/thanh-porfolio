@@ -32,10 +32,24 @@ const MySkills = () => {
   return (
     <motion.div id='skills' className='flex flex-col gap-8 py-24 page lg:gap-14'>
       <div className='space-y-2'>
-        <div className='gradient-text text-4xl font-bold xl:text-6xl'>My Skills</div>
-        <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>
-          I craft compelling visual stories through expert video editing, cinematography, and creative design.
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className='gradient-text text-4xl font-bold xl:text-6xl'
+        >
+          My Skills
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-xl xl:text-2xl xl:leading-[2]'
+        >
+          More than just buttons. Explore the artistic and technical skills that drive my filmmaking passion.
+        </motion.div>
       </div>
       <div className='space-y-4 lg:space-y-6'>
         <SkillCard title='EXPERTISE' items={expertise} />

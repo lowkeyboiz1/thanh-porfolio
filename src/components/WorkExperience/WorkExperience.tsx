@@ -41,7 +41,7 @@ const experiences = [
   {
     period: '12/2021 - 04/2023',
     role: 'Head of Video Editing & Design',
-    company: 'VNU-HCM Student Radio and TV Club',
+    company: 'VNU-HCM Student <br /> Radio and TV Club',
     image: '/NPT.png',
     description: [
       'Lead the production team to produce <strong>20 products</strong> with a total of <strong>nearly 30,000 views</strong>, helping the club increase by <strong>about 5,000 followers</strong>.',
@@ -57,10 +57,24 @@ const WorkExperience = () => {
   return (
     <div id='work-experience' className='flex cursor-none flex-col overflow-x-hidden py-24 page'>
       <div className='space-y-2'>
-        <div className='gradient-text text-4xl font-bold xl:text-6xl'>Work Experience</div>
-        <div className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-lg xl:text-2xl xl:leading-[2]'>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className='gradient-text text-4xl font-bold xl:text-6xl'
+        >
+          Work Experience
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className='mt-2 max-w-sm text-lg font-medium leading-[1.25] md:max-w-xl xl:text-2xl xl:leading-[2]'
+        >
           Building the foundation. Discover the diverse experiences that have fueled my creative growth.
-        </div>
+        </motion.div>
       </div>
       <div className='divide-y-2'>
         {experiences.map((exp, index) => (
@@ -111,7 +125,7 @@ const ExperienceCard = ({ period, role, company, image, description, index, setM
           <div className='size-10 lg:hidden xl:size-12'>
             <Image src={company === 'Sanofi' ? '/sanofi.png' : image || '/placeholder.svg'} alt={company} height={100} width={100} className='size-full object-contain' priority />
           </div>
-          <p className='text-lg font-medium duration-200 lg:group-hover:-translate-x-2 xl:text-2xl'>{company}</p>
+          <p dangerouslySetInnerHTML={{ __html: company }} className='text-lg font-medium duration-200 lg:group-hover:-translate-x-2 xl:text-2xl' />
         </div>
       </motion.div>
 
