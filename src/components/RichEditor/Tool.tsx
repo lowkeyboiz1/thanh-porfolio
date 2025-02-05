@@ -1,7 +1,7 @@
 import ToolButton from '@/components/RichEditor/ToolButton'
 import { Editor } from '@tiptap/react'
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, Check, CodeIcon, DotIcon, ImageIcon, ItalicIcon, ListOrderedIcon, StrikethroughIcon, Trash2, UnderlineIcon } from 'lucide-react'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
@@ -13,16 +13,17 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Link, Loader2, Palette, Type, Upload, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
-import { deleteFile } from '@/lib/imagekit'
+import { deleteFile, getAllFiles } from '@/lib/imagekit'
+import { useImageStore } from '@/store/useImageStore'
 interface Props {
   editor: Editor | null
-  listImageKits: ImageKitFile[]
-  setListImageKits: (list: ImageKitFile[]) => void
   onImageUpload?: (file: File) => Promise<string> // Add callback for image upload
   onSave?: (content: string, files: File[]) => Promise<void> // Add callback for saving content
 }
 
-const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits, setListImageKits }) => {
+const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
+  const { listImageKits, setListImageKits } = useImageStore()
+
   const [url, setUrl] = useState<string>('')
   const [youtubeUrl, setYoutubeUrl] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -39,6 +40,7 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits, setList
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
   const [fileIdToDelete, setFileIdToDelete] = useState<string>('')
   const [isDeletingImage, setIsDeletingImage] = useState<boolean>(false)
+  const [isFetchingImage, setIsFetchingImage] = useState<boolean>(false)
   const tools = [
     { name: 'bold', icon: <BoldIcon /> }, // Mark: bold
     { name: 'italic', icon: <ItalicIcon /> }, // Mark: italic
@@ -286,6 +288,27 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits, setList
     setFileIdToDelete('')
     setIsDeletingImage(false)
   }
+  const fetchImageKits = async () => {
+    try {
+      const data = await getAllFiles()
+      setListImageKits(data)
+    } catch (error) {
+      console.error('Error fetching images:', error)
+    } finally {
+      setIsFetchingImage(false)
+    }
+  }
+
+  useEffect(() => {
+    setIsFetchingImage(true)
+  }, [])
+
+  useEffect(() => {
+    if (listImageKits.length !== 0) return
+    if (isFetchingImage) {
+      fetchImageKits()
+    }
+  }, [isFetchingImage])
 
   return (
     <div className='relative top-0 flex flex-wrap gap-0.5'>

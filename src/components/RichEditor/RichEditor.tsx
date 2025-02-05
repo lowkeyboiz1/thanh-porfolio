@@ -30,7 +30,6 @@ interface RichEditorProps {
 }
 
 const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
-  const [listImageKits, setListImageKits] = useState<ImageKitFile[]>([])
   const extensions = [
     Underline,
     BulletList,
@@ -95,17 +94,9 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
     }
   })
 
-  useEffect(() => {
-    const fetchImageKit = async () => {
-      const data = await getAllFiles()
-      setListImageKits(data)
-    }
-    fetchImageKit()
-  }, [])
-
   return (
     <div className='flex flex-col gap-2'>
-      <Tool editor={editor} listImageKits={listImageKits} setListImageKits={setListImageKits} />
+      <Tool editor={editor} />
       <div className='rounded-lg border border-gray-200 p-2'>
         <EditorContent editor={editor} />
       </div>
