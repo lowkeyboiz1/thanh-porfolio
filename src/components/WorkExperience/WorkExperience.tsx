@@ -102,21 +102,21 @@ const ExperienceCard = ({ period, role, company, image, description, index, setM
         setModal({ isActive: false, index })
         toggleCursor(true)
       }}
-      className='group flex flex-col gap-8 py-12 duration-200 hover:opacity-60 md:flex-row md:gap-16 xl:py-24'
+      className='group flex flex-col gap-8 py-12 duration-200 md:flex-row md:gap-16 lg:hover:opacity-60 xl:py-24'
     >
       <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.2 }} className='space-y-4 md:w-1/3'>
-        <p className='text-sm text-white/60 duration-200 group-hover:-translate-x-2'>{period}</p>
+        <p className='text-sm text-white/60 duration-200 lg:group-hover:-translate-x-2'>{period}</p>
         <div className='flex items-center gap-4'>
           <div className='size-10 lg:hidden xl:size-12'>
             <Image src={company === 'Sanofi' ? '/sanofi.png' : image || '/placeholder.svg'} alt={company} height={100} width={100} className='size-full object-contain' priority />
           </div>
-          <p className='text-lg font-medium duration-200 group-hover:-translate-x-2 xl:text-2xl'>{company}</p>
+          <p className='text-lg font-medium duration-200 lg:group-hover:-translate-x-2 xl:text-2xl'>{company}</p>
         </div>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, x: 100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.2 }} className='space-y-4 md:w-2/3'>
-        <h3 className='text-lg font-medium duration-200 group-hover:translate-x-2'>{role}</h3>
-        <ul className='list-disc space-y-2 pl-4 leading-relaxed text-white/80 duration-200 group-hover:translate-x-2'>
+        <h3 className='text-lg font-medium duration-200 lg:group-hover:translate-x-2'>{role}</h3>
+        <ul className='list-disc space-y-2 pl-4 leading-relaxed text-white/80 duration-200 lg:group-hover:translate-x-2'>
           {description.map((desc, i) => (
             <li key={i} dangerouslySetInnerHTML={{ __html: desc }} />
           ))}
