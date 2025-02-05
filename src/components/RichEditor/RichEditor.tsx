@@ -46,6 +46,9 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
       openOnClick: false,
       autolink: true,
       defaultProtocol: 'https',
+      HTMLAttributes: {
+        class: 'font-bold text-blue-500 underline'
+      },
       protocols: ['http', 'https'],
       isAllowedUri: (url, ctx) => {
         try {

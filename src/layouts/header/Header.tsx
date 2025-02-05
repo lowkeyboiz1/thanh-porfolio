@@ -75,8 +75,8 @@ const Header = () => {
         </>
       )}
       <header className='sticky top-0 z-[120] pt-2 backdrop-blur-sm page flex-between xl:pt-8'>
-        <div onClick={handleScrollToTop} className='size-16 cursor-pointer xl:w-20'>
-          <Image src='/logo.png' alt='vika dev logo' width={100} height={100} className='size-full object-cover' />
+        <div onClick={handleScrollToTop} className='w-32 cursor-pointer lg:w-auto'>
+          <Image src='/logo.png' alt='vika dev logo' width={200} height={200} className='size-full object-cover' />
         </div>
         <AnimatedMenuToggle />
       </header>

@@ -59,23 +59,7 @@ const Projects = () => {
               ))}
             </div>
           ) : (
-            <motion.div
-              style={{ x }}
-              initial={{
-                opacity: 0,
-                y: 100
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0
-              }}
-              transition={{
-                duration: 0.25,
-                ease: 'easeOut'
-              }}
-              viewport={{ once: true }}
-              className='flex h-full min-h-[500px] w-full gap-20 p-2'
-            >
+            <motion.div style={{ x }} className='flex h-full min-h-[500px] w-full gap-20 p-2'>
               {projects.map((project) => {
                 return <ProjectItem key={project.title} project={project} />
               })}

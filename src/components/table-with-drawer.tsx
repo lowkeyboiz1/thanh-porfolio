@@ -54,7 +54,6 @@ export default function TableWithDrawer() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
@@ -62,7 +61,7 @@ export default function TableWithDrawer() {
   const [selectedFileImage, setSelectedFileImage] = useState<File | null>(null)
   const [projectDetail, setProjectDetail] = useState<string | null>(null)
   const [projectDetailHTMLCreate, setProjectDetailHTMLCreate] = useState<string | null>(null)
-
+  const [isFetching, setIsFetching] = useState(false)
   const [errors, setErrors] = useState({
     title: '',
     description: '',
@@ -106,23 +105,17 @@ export default function TableWithDrawer() {
       }
     }
   }
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      setIsLoading(true)
-      try {
-        const data = await getProjects()
-        setItems(data)
-      } catch (error) {
-        console.error('Error fetching projects:', error)
-        toast.error('Failed to load projects')
-      } finally {
-        setIsLoading(false)
-      }
+  const fetchProjects = async () => {
+    try {
+      const data = await getProjects()
+      setItems(data)
+    } catch (error) {
+      console.error('Error fetching projects:', error)
+      toast.error('Failed to load projects')
+    } finally {
+      setIsFetching(false)
     }
-
-    fetchProjects()
-  }, [])
+  }
 
   useEffect(() => {
     // Cleanup image preview URL when component unmounts
@@ -304,6 +297,14 @@ export default function TableWithDrawer() {
     }
   }
 
+  useEffect(() => {
+    if (isFetching) {
+      fetchProjects()
+    }
+  }, [isFetching])
+  useEffect(() => {
+    setIsFetching(true)
+  }, [])
   return (
     <div className='mx-auto w-full p-4 2xl:max-w-[1400px]'>
       <div className='mb-4 flex items-center justify-between'>
@@ -468,7 +469,7 @@ export default function TableWithDrawer() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading ? (
+          {isFetching ? (
             <TableRow>
               <TableCell colSpan={8} className='text-center'>
                 <Loader2 className='mx-auto h-6 w-6 animate-spin' />
