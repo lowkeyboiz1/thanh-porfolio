@@ -1,3 +1,4 @@
+import { useIsMobile } from '@/hooks/use-mobile'
 import { useMousePosition } from '@/hooks/useMousePosition'
 import { useCursorStore } from '@/store/useCursorStore'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -52,7 +53,7 @@ const experiences = [
 const WorkExperience = () => {
   const [modal, setModal] = useState({ isActive: false, index: 1 })
   const { position } = useMousePosition()
-
+  const isMobile = useIsMobile()
   return (
     <div id='work-experience' className='flex cursor-none flex-col overflow-x-hidden py-24 page'>
       <div className='space-y-2'>
@@ -67,7 +68,7 @@ const WorkExperience = () => {
         ))}
       </div>
       <div
-        className='pointer-events-none fixed z-[130]'
+        className='pointer-events-none fixed z-[130] hidden lg:block'
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`
@@ -139,7 +140,6 @@ type TModalImage = {
 
 const ModalImage = ({ modal, experiences }: TModalImage) => {
   const { isActive, index } = modal
-
   const scaleAnimation = {
     initial: { scale: 0, x: '-50%', y: '-50%' },
     enter: { scale: 1, x: '-50%', y: '-50%', transition: { duration: 0.2, ease: [0.76, 0, 0.24, 1] } },

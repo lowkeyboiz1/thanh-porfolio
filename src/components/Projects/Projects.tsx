@@ -9,23 +9,28 @@ import { useEffect, useRef, useState } from 'react'
 const Projects = () => {
   const targetRef = useRef(null)
   const [projects, setProjects] = useState<TProject[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const isMobile = useIsMobile()
+  const [isFetching, setIsFetching] = useState(false)
+  const fetchProjects = async () => {
+    try {
+      const projects = await getProjects()
+      setProjects(projects || [])
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsFetching(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setIsLoading(true)
-        const projects = await getProjects()
-        setProjects(projects || [])
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchProjects()
+    setIsFetching(true)
   }, [])
+
+  useEffect(() => {
+    if (isFetching) {
+      fetchProjects()
+    }
+  }, [isFetching])
 
   const { scrollYProgress } = useScroll({
     target: targetRef
@@ -41,7 +46,7 @@ const Projects = () => {
           Some things I&apos;ve built with love, expertise and a pinch of magical ingredients.
         </div>
         <div className='mt-10 flex w-full items-center overflow-hidden'>
-          {isLoading ? (
+          {isFetching ? (
             <div className='flex h-full min-h-[500px] w-full gap-20'>
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className='flex w-full items-center justify-center'>
@@ -124,8 +129,9 @@ const ProjectItem = ({ project }: { project: TProject }) => {
         rotateY: rotateY,
         transition: 'transform 0.3s ease-out'
       }}
-      className='relative flex max-h-[440px] w-full max-w-[700px] flex-shrink-0 overflow-hidden rounded-3xl bg-blue-500'
+      className='relative flex w-full max-w-[700px] flex-shrink-0 overflow-hidden rounded-3xl bg-blue-500'
     >
+      <p className='absolute left-4 top-4 text-2xl font-bold text-white'>{project.title}</p>
       <Link href={`/projects/${project.slug}`} className='absolute inset-0 z-10' />
       <Image src={`${project.image_review.url}`} alt={project.title} width={1000} height={1000} className='size-full object-cover' />
     </motion.div>

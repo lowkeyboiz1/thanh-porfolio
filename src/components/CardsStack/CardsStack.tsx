@@ -75,7 +75,7 @@ const Card = ({
             </ul>
           </div>
           <div className='overflow-hidden rounded-2xl'>
-            <motion.div style={{ scale: imageScale }} className='size-full w-auto overflow-hidden rounded-2xl'>
+            <motion.div style={{ scale: imageScale }} className='mx-auto size-full w-auto overflow-hidden rounded-2xl'>
               <Image src={image} alt={image} width={500} height={500} className='size-full object-cover object-center' />
             </motion.div>
           </div>

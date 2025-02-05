@@ -315,18 +315,18 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
   return (
     <div className='relative top-0 flex flex-wrap gap-0.5'>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
+        <DialogContent className='max-w-[1000px]'>
           <DialogTitle className='hidden'>Upload Image</DialogTitle>
           <div className='rounded-xl p-6'>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <h2 className='mb-6 text-center text-2xl font-semibold'>Upload Image</h2>
-              <div className='flex flex-wrap gap-1'>
+              <div className='mb-4 flex flex-wrap gap-1'>
                 {listImageKits.map((item) => {
                   if (item.fileType !== 'image') return
                   return (
                     <div key={item.fileId} className='relative size-[100px]'>
                       <Image src={item.url} alt={item.name} width={100} height={100} className='size-full object-cover' />
-                      <div className='absolute bottom-0 flex items-center justify-center gap-2'>
+                      <div className='absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 p-1'>
                         <Button onClick={() => handleImageSelect(item)} size='sm' variant='secondary'>
                           <Check className='h-4 w-4' />
                         </Button>
