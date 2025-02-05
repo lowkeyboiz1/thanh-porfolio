@@ -1,6 +1,21 @@
 import ToolButton from '@/components/RichEditor/ToolButton'
 import { Editor } from '@tiptap/react'
-import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, Check, CodeIcon, DotIcon, ImageIcon, ItalicIcon, ListOrderedIcon, StrikethroughIcon, Trash2, UnderlineIcon } from 'lucide-react'
+import {
+  AlignCenterIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
+  BoldIcon,
+  Check,
+  CloudLightning,
+  CodeIcon,
+  DotIcon,
+  ImageIcon,
+  ItalicIcon,
+  ListOrderedIcon,
+  StrikethroughIcon,
+  Trash2,
+  UnderlineIcon
+} from 'lucide-react'
 import { FC, useEffect } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -13,16 +28,14 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Link, Loader2, Palette, Type, Upload, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
-import { deleteFile, getAllFiles } from '@/lib/imagekit'
+import { deleteFile, getAllFiles, uploadFiles } from '@/lib/imagekit'
 import { useImageStore } from '@/store/useImageStore'
 
 interface Props {
   editor: Editor | null
-  onImageUpload?: (file: File) => Promise<string> // Add callback for image upload
-  onSave?: (content: string, files: File[]) => Promise<void> // Add callback for saving content
 }
 
-const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
+const Tool: FC<Props> = ({ editor }) => {
   const { listImageKits, setListImageKits } = useImageStore()
 
   const [url, setUrl] = useState<string>('')
@@ -143,9 +156,9 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
   }
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files
     if (file) {
-      await handleFile(file)
+      await handleFile(Array.from(file))
     }
     e.target.value = ''
   }
@@ -158,38 +171,31 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
   const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    const file = e.dataTransfer.files?.[0]
+    const file = e.dataTransfer.files
     if (file) {
-      await handleFile(file)
+      await handleFile(Array.from(file))
     }
   }
 
-  const handleFile = async (file: File) => {
-    if (file && file.type.startsWith('image/')) {
+  const handleFile = async (file: File[]) => {
+    if (file && file[0].type.startsWith('image/')) {
       setIsLoading(true)
       try {
-        let imageUrl = ''
-        if (onImageUpload) {
-          // If upload callback provided, use it
-          imageUrl = await onImageUpload(file)
-        } else {
-          // Fallback to base64
-          imageUrl = await new Promise((resolve) => {
-            const reader = new FileReader()
-            reader.onloadend = () => resolve(reader.result as string)
-            reader.readAsDataURL(file)
-          })
-        }
+        // const imageUrl = await new Promise((resolve) => {
+        //   const reader = new FileReader()
+        //   reader.onloadend = () => resolve(reader.result as string)
+        //   reader.readAsDataURL(file[0])
+        // })
 
-        if (editor && imageUrl) {
-          setUploadedFiles((prev) => [...prev, file])
-          chainMethods(editor, (chain) => chain.setImage({ src: imageUrl, alt: file.name }))
-        }
+        const newImages: any = await uploadFiles(file)
+        setListImageKits([...listImageKits, ...newImages])
+
+        // chainMethods(editor, (chain) => chain.setImage({ src: imageUrl as string, alt: file.name }))
       } catch (error) {
         console.error('Error handling file:', error)
       } finally {
         setIsLoading(false)
-        setIsOpen(false)
+        // setIsOpen(false)
       }
     }
   }
@@ -258,17 +264,6 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
     }
   }
 
-  const handleSave = async () => {
-    if (!editor || !onSave) return
-
-    const content = editor.getHTML()
-    // Clear all base64 images from content before saving
-    const contentClone = content
-    const contentWithoutBase64 = contentClone.replace(/<img[^>]*src="data:image\/[^>]*>/g, '')
-
-    await onSave(contentWithoutBase64, uploadedFiles)
-  }
-
   const handleImageSelect = (item: ImageKitFile) => {
     if (!editor) return
     chainMethods(editor, (chain) => chain.setImage({ src: item.url, alt: item.name }))
@@ -320,12 +315,12 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
           <div className='rounded-xl p-6'>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <h2 className='mb-6 text-center text-2xl font-semibold'>Upload Image</h2>
-              <div className='mb-4 flex flex-wrap gap-1'>
+              <div className='mb-4 flex h-[440px] flex-wrap gap-1 overflow-y-auto'>
                 {listImageKits.map((item) => {
                   if (item.fileType !== 'image') return
                   return (
-                    <div key={item.fileId} className='relative size-[100px]'>
-                      <Image src={item.url} alt={item.name} width={100} height={100} className='size-full object-cover' />
+                    <div key={item.fileId} className='relative size-[200px]'>
+                      <Image src={item.url} alt={item.name} width={400} height={400} className='size-full object-cover' />
                       <div className='absolute bottom-0 left-0 right-0 flex items-center justify-center gap-2 p-1'>
                         <Button onClick={() => handleImageSelect(item)} size='sm' variant='secondary'>
                           <Check className='h-4 w-4' />
@@ -362,7 +357,7 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
                 </motion.div>
               </AnimatePresence>
             </motion.div>
-            <input type='file' ref={fileInputRef} onChange={handleFileChange} accept='image/*' className='hidden' />
+            <input type='file' ref={fileInputRef} onChange={handleFileChange} accept='image/*' className='hidden' multiple />
           </div>
         </DialogContent>
       </Dialog>
@@ -464,11 +459,6 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave }) => {
           </ToolButton>
         )
       })}
-      {onSave && (
-        <Button onClick={handleSave} className='ml-2 bg-green-500 text-white hover:bg-green-600'>
-          Save
-        </Button>
-      )}
     </div>
   )
 }

@@ -62,7 +62,7 @@ export const uploadFiles = async (files: File[]): Promise<UploadResult[]> => {
     }
 
     const result = await response.json()
-    return { url: result.url, uuid, fileId: result.fileId }
+    return { url: result.url, uuid, fileId: result.fileId, ...result }
   })
 
   // Wait for all uploads to complete
