@@ -27,7 +27,7 @@ const ProjectDetail = () => {
       }
     }
     fetchProjectDetail()
-  }, [slug]) // Add slug dependency
+  }, [slug])
 
   if (isLoading) {
     return (
@@ -48,14 +48,15 @@ const ProjectDetail = () => {
   return (
     <>
       <Header />
-      <div className='flex min-h-screen flex-col gap-10 py-20 page'>
-        <div className='max-h-[700px] w-full overflow-hidden rounded-lg'>
-          <Image src={projectDetail.image_review.url} alt={projectDetail.title} width={2000} height={2000} className='object-contain' priority />
+      <div className='flex flex-col gap-6 py-16 page sm:gap-8 sm:py-20 lg:gap-10'>
+        <div className='max-h-[500px] w-full overflow-hidden rounded-lg sm:max-h-[600px] lg:max-h-[700px]'>
+          <Image src={projectDetail.image_review.url} alt={projectDetail.title} width={2000} height={2000} className='h-full w-full object-contain' priority />
         </div>
-        <div className='flex flex-col gap-6 text-white'>
-          <h1 className='gradient-text py-2 text-4xl font-bold xl:text-6xl'>{projectDetail.title}</h1>
-          <div className='grid grid-cols-2 gap-20'>
-            <div className='flex flex-col gap-4 lg:text-lg'>
+        <div className='flex flex-col gap-4 text-white sm:gap-6'>
+          <h1 className='gradient-text py-2 text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl'>{projectDetail.title}</h1>
+
+          <div className='flex flex-col gap-6 md:grid md:grid-cols-2 md:gap-8 lg:gap-20'>
+            <div className='flex flex-col gap-3 text-sm sm:text-base lg:text-lg'>
               <div className='flex items-center justify-between font-medium'>
                 <p className='text-gray-400'>Client:</p>
                 <p>{projectDetail.client}</p>
@@ -69,17 +70,19 @@ const ProjectDetail = () => {
                 <p>{projectDetail.year}</p>
               </div>
             </div>
-            <div className='flex flex-col font-medium lg:text-lg'>
+
+            <div className='flex flex-col text-sm font-medium sm:text-base lg:text-lg'>
               <p className='text-gray-400'>Description:</p>
               <p>{projectDetail.description}</p>
             </div>
           </div>
 
-          <p className='lg:text-lg'>
+          <div className='text-sm sm:text-base lg:text-lg'>
             <span className='font-medium text-gray-400'>Scope of work:</span> {projectDetail.scopeOfWork}
-          </p>
+          </div>
         </div>
-        <div className='prose break-words' dangerouslySetInnerHTML={{ __html: projectDetail.detail }} />
+
+        <div className='prose prose-sm sm:prose-base lg:prose-lg prose-headings:text-white prose-p:text-gray-300 max-w-none break-words' dangerouslySetInnerHTML={{ __html: projectDetail.detail }} />
       </div>
     </>
   )

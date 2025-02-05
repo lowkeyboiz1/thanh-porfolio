@@ -68,7 +68,11 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
       types: ['heading', 'paragraph']
     }),
     Document,
-    Paragraph,
+    Paragraph.configure({
+      HTMLAttributes: {
+        class: 'min-h-[1.5em]' // Add minimum height for empty paragraphs
+      }
+    }),
     TextStyle.configure({ mergeNestedSpanStyles: true }),
     Text,
     Heading.configure({
@@ -80,14 +84,9 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
     extensions,
     content: value,
     onUpdate: ({ editor }) => {
-      if (onChange) {
-        onChange(editor.getHTML())
-        // Kiểm tra nếu nội dung trống và chèn thẻ <br>
-        const isEmpty = editor.getText().trim() === ''
-        if (isEmpty) {
-          editor.commands.insertContent('<br>')
-        }
-      }
+      if (!editor || !onChange) return
+      const content = editor.getHTML()
+      onChange(content)
     },
     editorProps: {
       attributes: {
@@ -106,7 +105,7 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
 
   return (
     <div className='flex flex-col gap-2'>
-      <Tool editor={editor} listImageKits={listImageKits} />
+      <Tool editor={editor} listImageKits={listImageKits} setListImageKits={setListImageKits} />
       <div className='rounded-lg border border-gray-200 p-2'>
         <EditorContent editor={editor} />
       </div>

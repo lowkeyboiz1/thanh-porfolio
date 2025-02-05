@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { postContactMessage } from '@/apis/contact'
+import { Loader2 } from 'lucide-react'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Contact = () => {
     email: '',
     message: ''
   })
+  const [isLoading, setIsLoading] = useState(false)
 
   const validateForm = () => {
     if (!formData.name.trim()) {
@@ -47,6 +49,7 @@ const Contact = () => {
     if (!validateForm()) return
 
     try {
+      setIsLoading(true)
       await postContactMessage(formData.name, formData.email, formData.message)
 
       // Reset form
@@ -59,6 +62,8 @@ const Contact = () => {
     } catch (error) {
       console.error('Error sending message:', error)
       toast.error('Error sending message')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -81,14 +86,14 @@ const Contact = () => {
           <Label htmlFor='name' className='0 text-lg font-medium'>
             Name
           </Label>
-          <Input type='text' id='name' name='name' value={formData.name} onChange={handleChange} className='px-4 py-2 focus:outline-none' />
+          <Input type='text' id='name' name='name' value={formData.name} onChange={handleChange} className='px-4 py-2 focus:outline-none' disabled={isLoading} />
         </div>
 
         <div className='flex flex-col gap-2'>
           <Label htmlFor='email' className='text-lg font-medium text-gray-200'>
             Email
           </Label>
-          <Input type='email' id='email' name='email' value={formData.email} onChange={handleChange} className='px-4 py-2 focus:outline-none' />
+          <Input type='email' id='email' name='email' value={formData.email} onChange={handleChange} className='px-4 py-2 focus:outline-none' disabled={isLoading} />
         </div>
         <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between'>
@@ -97,11 +102,22 @@ const Contact = () => {
             </Label>
             <p className='text-sm text-gray-100'>{formData.message.length} / 300</p>
           </div>
-          <Textarea id='message' name='message' value={formData.message} onChange={handleChange} rows={5} className='px-4 py-2 focus:outline-none' />
+          <Textarea id='message' name='message' value={formData.message} onChange={handleChange} rows={5} className='px-4 py-2 focus:outline-none' disabled={isLoading} />
         </div>
 
-        <button type='submit' className='mt-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 px-8 py-3 font-medium text-white transition-all hover:from-blue-600 hover:to-blue-800'>
-          Send Message
+        <button
+          type='submit'
+          disabled={isLoading}
+          className='mt-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 px-8 py-3 font-medium text-white transition-all hover:from-blue-600 hover:to-blue-800 disabled:cursor-not-allowed disabled:opacity-50'
+        >
+          {isLoading ? (
+            <div className='flex items-center justify-center gap-2'>
+              <Loader2 className='h-4 w-4 animate-spin' />
+              <span>Sending...</span>
+            </div>
+          ) : (
+            'Send Message'
+          )}
         </button>
       </form>
     </motion.div>

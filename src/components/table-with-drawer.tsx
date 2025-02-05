@@ -291,12 +291,15 @@ export default function TableWithDrawer() {
       setItems([...items, response])
       setCurrentPage(Math.ceil((items.length + 1) / ITEMS_PER_PAGE))
       setIsAddDialogOpen(false)
-      setSelectedFileImage(null)
-      setImagePreview(null)
     } catch (error) {
       console.error('Error adding item:', error)
       toast.error('Failed to add item')
     } finally {
+      setImagePreview(null)
+      setSelectedFileImage(null)
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview)
+      }
       setIsAdding(false)
     }
   }

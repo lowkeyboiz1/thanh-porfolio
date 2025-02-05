@@ -1,26 +1,28 @@
 import ToolButton from '@/components/RichEditor/ToolButton'
-import { ChainedCommands, Editor, useEditor } from '@tiptap/react'
-import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, CodeIcon, DotIcon, ImageIcon, ItalicIcon, ListOrderedIcon, StrikethroughIcon, UnderlineIcon } from 'lucide-react'
-import { ChangeEventHandler, FC, useEffect } from 'react'
+import { Editor } from '@tiptap/react'
+import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, Check, CodeIcon, DotIcon, ImageIcon, ItalicIcon, ListOrderedIcon, StrikethroughIcon, Trash2, UnderlineIcon } from 'lucide-react'
+import { FC } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Link, Loader2, Upload, Youtube, Palette, Type } from 'lucide-react'
-import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
-import { chainMethods } from '@/utils/chainMethods'
 import { ImageKitFile } from '@/type'
-
+import { chainMethods } from '@/utils/chainMethods'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Link, Loader2, Palette, Type, Upload, Youtube } from 'lucide-react'
+import Image from 'next/image'
+import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
+import { deleteFile } from '@/lib/imagekit'
 interface Props {
   editor: Editor | null
   listImageKits: ImageKitFile[]
+  setListImageKits: (list: ImageKitFile[]) => void
   onImageUpload?: (file: File) => Promise<string> // Add callback for image upload
   onSave?: (content: string, files: File[]) => Promise<void> // Add callback for saving content
 }
 
-const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits }) => {
+const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits, setListImageKits }) => {
   const [url, setUrl] = useState<string>('')
   const [youtubeUrl, setYoutubeUrl] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -34,6 +36,9 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]) // Track uploaded files
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false)
+  const [fileIdToDelete, setFileIdToDelete] = useState<string>('')
+  const [isDeletingImage, setIsDeletingImage] = useState<boolean>(false)
   const tools = [
     { name: 'bold', icon: <BoldIcon /> }, // Mark: bold
     { name: 'italic', icon: <ItalicIcon /> }, // Mark: italic
@@ -261,6 +266,27 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits }) => {
     await onSave(contentWithoutBase64, uploadedFiles)
   }
 
+  const handleImageSelect = (item: ImageKitFile) => {
+    if (!editor) return
+    chainMethods(editor, (chain) => chain.setImage({ src: item.url, alt: item.name }))
+    setIsOpen(false)
+  }
+
+  const handleImageDelete = async (fileId: string) => {
+    setFileIdToDelete(fileId)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    setIsDeletingImage(true)
+    const newListImageKits = listImageKits.filter((item) => item.fileId !== fileIdToDelete)
+    await deleteFile(fileIdToDelete)
+    setListImageKits(newListImageKits)
+    setIsDeleteDialogOpen(false)
+    setFileIdToDelete('')
+    setIsDeletingImage(false)
+  }
+
   return (
     <div className='relative top-0 flex flex-wrap gap-0.5'>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -269,9 +295,25 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits }) => {
           <div className='rounded-xl p-6'>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <h2 className='mb-6 text-center text-2xl font-semibold'>Upload Image</h2>
-              {/* {listImageKits.map((item) => {
-                return <div key={item.fileId}>{item.name}</div>
-              })} */}
+              <div className='flex flex-wrap gap-1'>
+                {listImageKits.map((item) => {
+                  if (item.fileType !== 'image') return
+                  return (
+                    <div key={item.fileId} className='relative size-[100px]'>
+                      <Image src={item.url} alt={item.name} width={100} height={100} className='size-full object-cover' />
+                      <div className='absolute bottom-0 flex items-center justify-center gap-2'>
+                        <Button onClick={() => handleImageSelect(item)} size='sm' variant='secondary'>
+                          <Check className='h-4 w-4' />
+                        </Button>
+                        <Button onClick={() => handleImageDelete(item.fileId)} size='sm' variant='destructive'>
+                          <Trash2 className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
               <AnimatePresence mode='wait'>
                 <motion.div key='upload-options' initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <div
@@ -296,6 +338,23 @@ const Tool: FC<Props> = ({ editor, onImageUpload, onSave, listImageKits }) => {
               </AnimatePresence>
             </motion.div>
             <input type='file' ref={fileInputRef} onChange={handleFileChange} accept='image/*' className='hidden' />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <div className='p-6'>
+            <p>Are you sure you want to delete this image?</p>
+            <div className='mt-4 flex justify-end gap-2'>
+              <Button onClick={() => setIsDeleteDialogOpen(false)} variant='outline'>
+                Cancel
+              </Button>
+              <Button onClick={confirmDelete} variant='destructive' disabled={isDeletingImage}>
+                {isDeletingImage ? <Loader2 className='animate-spin' size={20} /> : 'Delete'}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
