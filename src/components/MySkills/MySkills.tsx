@@ -2,7 +2,6 @@
 import { motion } from 'framer-motion'
 
 import { AnimatedTooltip } from '@/components/AnimatedTooltip'
-import { Omega } from 'lucide-react'
 import Image from 'next/image'
 
 type TSkillItem = {
@@ -14,9 +13,9 @@ type TSkillItem = {
 const MySkills = () => {
   const expertise: TSkillItem[] = [
     { id: 1, name: 'Video Editing', image: '/VideoEditing.png' },
-    { id: 2, name: 'Videography', image: '/Videography.webp' },
+    { id: 2, name: 'Videography', image: '/Videography.png' },
     { id: 3, name: 'Photography', image: '/Photography.png' },
-    { id: 4, name: '2D Graphic Design', image: '/2DGraphicDesign.webp' },
+    { id: 4, name: '2D Graphic Design', image: '/2DGraphicDesign.png' },
     { id: 5, name: 'Sound Design', image: '/SoundDesign.png' }
   ]
 
@@ -32,8 +31,8 @@ const MySkills = () => {
   ]
 
   return (
-    <div className='grid grid-cols-2 gap-10 py-24 page'>
-      <motion.div id='skills' className='flex flex-col gap-8 lg:gap-14'>
+    <div id='skills' className='grid grid-cols-2 gap-10 py-24 page'>
+      <motion.div className='flex flex-col gap-8 lg:gap-14'>
         <div className='space-y-2'>
           <motion.div
             initial={{ opacity: 0, y: 40 }}

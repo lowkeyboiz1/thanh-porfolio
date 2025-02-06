@@ -57,7 +57,7 @@ export default function CenteredPixelTransition({ dimensions }: { dimensions: { 
       {[...Array(10)].map((_, index) => {
         return (
           <div key={index} className={'flex h-[10vh] w-full'}>
-            {getBlocks(index)}
+            {/* {getBlocks(index)} */}
           </div>
         )
       })}

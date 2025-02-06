@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { useCursorStore } from '@/store/useCursorStore'
-import { Menu, CenteredPixelTransition } from '@/components/Menu'
+import { Menu, CenteredPixelTransition, BackgoundEffect } from '@/components/Menu'
 
 const Header = () => {
   const handleScrollToTop = () => {
@@ -39,23 +39,11 @@ const Header = () => {
     }
   }, [isCursorVisible, isMobile])
 
-  const updateDimensions = () => {
-    const { innerWidth, innerHeight } = window
-
-    setDimensions({ width: innerWidth, height: innerHeight })
-  }
-
-  useEffect(() => {
-    updateDimensions()
-
-    window.addEventListener('resize', updateDimensions)
-
-    return () => window.removeEventListener('resize', updateDimensions)
-  }, [])
   return (
     <>
       <Menu />
-      {dimensions.height > 0 && <CenteredPixelTransition dimensions={dimensions} />}
+      <BackgoundEffect />
+      {/* {dimensions.height > 0 && <CenteredPixelTransition dimensions={dimensions} />} */}
       {isCursorVisible && !isMobile && (
         <>
           <div
@@ -76,7 +64,7 @@ const Header = () => {
       )}
       <header className='sticky top-0 z-[120] pt-2 backdrop-blur-sm page flex-between xl:pt-8'>
         <div onClick={handleScrollToTop} className='w-32 cursor-pointer lg:w-auto'>
-          <Image src='/logo.png' alt='vika dev logo' width={200} height={200} className='size-full object-cover' />
+          <Image src='/logo.png' alt='vika dev logo' width={100} height={100} className='size-full object-cover' />
         </div>
         <AnimatedMenuToggle />
       </header>
