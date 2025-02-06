@@ -53,7 +53,7 @@ export default function Menu() {
               }}
               exit={{
                 opacity: 0,
-                y: 20,
+                y: 40,
                 transition: {
                   duration: 0.3,
                   delay: index * 0.05

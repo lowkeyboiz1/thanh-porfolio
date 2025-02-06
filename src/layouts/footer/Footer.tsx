@@ -19,7 +19,6 @@ const Footer = () => {
           <div className='relative h-48 w-96 md:h-60 md:w-[480px]'>
             <Image src='/logo.png' alt='Logo' fill className='object-contain' />
           </div>
-
           <SocialLinks />
           <nav className='flex flex-wrap justify-center gap-4 px-4 md:gap-6'>
             {menuItems.map((item) => (

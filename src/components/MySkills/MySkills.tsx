@@ -31,7 +31,7 @@ const MySkills = () => {
   ]
 
   return (
-    <div id='skills' className='grid grid-cols-2 gap-10 py-24 page'>
+    <div id='skills' className='gap-10 py-24 page lg:grid lg:grid-cols-2'>
       <motion.div className='flex flex-col gap-8 lg:gap-14'>
         <div className='space-y-2'>
           <motion.div
@@ -59,7 +59,7 @@ const MySkills = () => {
         </div>
       </motion.div>
       <motion.div initial={{ opacity: 0, x: 40, scale: 0.5 }} whileInView={{ opacity: 1, x: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className='col-span-1'>
-        <Image src='/my-skills.png' alt='skills' width={1000} height={1000} className='size-full object-contain' />
+        <Image src='/my-skills.png' alt='skills' width={1000} height={1000} className='hidden size-full object-contain lg:flex' />
       </motion.div>
     </div>
   )
