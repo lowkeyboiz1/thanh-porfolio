@@ -41,10 +41,10 @@ const Projects = () => {
     stiffness: 400
   })
 
-  const x = useTransform(smoothProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 105}%` : `-${projects.length * 60}%`])
+  const x = useTransform(smoothProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 50}%` : `-${projects.length * 40}%`])
 
   return (
-    <section id='projects' ref={targetRef} className='relative h-[200vh] w-full page lg:h-[300vh]'>
+    <section id='projects' ref={targetRef} className='relative h-[400vh] w-full page'>
       <div className='sticky top-[4.3rem] 2xl:top-40'>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
