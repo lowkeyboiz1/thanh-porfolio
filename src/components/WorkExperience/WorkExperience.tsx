@@ -24,7 +24,7 @@ const experiences = [
     image: '/YoungReporterClub.png',
     description: [
       'Managed a team of <strong>nearly 60 members</strong> to produce multimedia products such as news bulletins, reports, game shows, talk shows...',
-      'Led the production team to produce <strong>75 products</strong> with a total of <strong>nearly 90,000 views</strong>, helping Young Reporters Club increase by <strong>more than 5,400 followers</strong>.',
+      'Lead the production team to produce <strong>75 products</strong> with a total of <strong>nearly 90,000 views</strong>, helping Young Reporters Club increase by <strong>more than 5,400 followers</strong>.',
       'Collaborated with teammates to film and take photos for media products.'
     ]
   },
@@ -35,7 +35,7 @@ const experiences = [
     image: '/LogoEnglishDebunkClub.png',
     description: [
       'Managed a team of <strong>more than 20 members</strong> to produce media products about English learning tips, posted on Facebook Watch and TikTok.',
-      'Led the production team to produce <strong>33 products</strong> with a total of <strong>nearly 15,000 views</strong>, helping English Debunk Club increase by <strong>about 3,200 followers</strong>.'
+      'Lead the production team to produce <strong>33 products</strong> with a total of <strong>nearly 15,000 views</strong>, helping English Debunk Club increase by <strong>about 3,200 followers</strong>.'
     ]
   },
   {
