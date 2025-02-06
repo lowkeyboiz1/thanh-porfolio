@@ -13,8 +13,8 @@ const Footer = () => {
   ]
 
   return (
-    <div className='relative h-[600px] md:h-[800px]' style={{ clipPath: 'polygon(0% 0, 100% 0%, 100% 100%, 0 100%)' }}>
-      <div className='fixed bottom-0 h-[600px] w-full md:h-[800px]'>
+    <div className='relative h-[600px] bg-gray-900 2xl:h-[800px]' style={{ clipPath: 'polygon(0% 0, 100% 0%, 100% 100%, 0 100%)' }}>
+      <div className='fixed bottom-0 h-[600px] w-full 2xl:h-[800px]'>
         <div className='mx-auto flex h-full flex-col gap-4 page'>
           <div className='flex flex-col items-center justify-center'>
             <div className='relative h-48 w-96 md:h-60 md:w-[480px]'>

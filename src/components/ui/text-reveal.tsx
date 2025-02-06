@@ -22,7 +22,7 @@ export const TextRevealByWord: FC<TextRevealByWordProps> = ({ text, className })
   const textsHighlighted = ['tell', 'stories', 'impact.', 'leave', 'lasting', 'a']
 
   return (
-    <div ref={targetRef} className={cn('relative z-0 h-[150vh]', className)}>
+    <div ref={targetRef} className={cn('relative z-0 h-[200vh]', className)}>
       <div className={'sticky top-20 mx-auto flex h-[50%] max-w-6xl items-center bg-transparent'}>
         <p ref={targetRef} className={'flex flex-wrap items-center justify-center p-5 text-4xl font-bold text-black/20 dark:text-white/20 md:text-5xl lg:text-6xl xl:text-7xl'}>
           {words.map((word, i) => {

@@ -61,7 +61,7 @@ const Card = ({
     <motion.div
       ref={containerRef}
       style={{ scale, top: `calc(-7vh + ${index * (100 / length - 1)}px)`, zIndex: index }}
-      className={`sticky flex h-dvh w-full items-center justify-center px-4 md:px-0`}
+      className={`sticky flex h-[120dvh] w-full items-center justify-center px-4 md:px-0`}
     >
       <div className={`max-h-1/2 mx-auto flex flex-col overflow-hidden rounded-2xl 2xl:gap-8 ${color} gap-4 border border-gray-700 p-6 lg:p-10 2xl:p-10`}>
         <p dangerouslySetInnerHTML={{ __html: title }} className='text-center text-2xl font-bold text-white md:text-3xl lg:text-4xl 2xl:my-2' />
