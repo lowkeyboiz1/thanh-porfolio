@@ -112,7 +112,7 @@ export default {
     plugin(function ({ addUtilities }) {
       addUtilities({
         '.page': {
-          '@apply max-w-[1200px] mx-auto px-2 xl:px-10 w-full': {}
+          '@apply max-w-[1200px] mx-auto px-4 xl:px-10 w-full': {}
         },
         '.flex-center': {
           '@apply flex items-center justify-center': {}
