@@ -33,7 +33,7 @@ const socialLinks = [
 
 const SocialLinks = () => {
   return (
-    <div className='flex gap-6'>
+    <div className='-mt-10 flex gap-6'>
       {socialLinks.map((link, index) => (
         <motion.div key={link.name} {...fadeInUpAnimation} transition={{ ...fadeInUpAnimation.transition, delay: 1 + index * 0.1, duration: 0.5 }}>
           <MagneticWrapper>
