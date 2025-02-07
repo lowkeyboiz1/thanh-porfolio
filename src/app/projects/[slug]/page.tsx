@@ -1,6 +1,7 @@
 'use client'
 
 import { getProjectDetail } from '@/apis/projects'
+import { Footer } from '@/layouts/footer'
 import Header from '@/layouts/header/Header'
 import { TProject } from '@/type'
 import { Loader2 } from 'lucide-react'
@@ -84,6 +85,7 @@ const ProjectDetail = () => {
 
         <div className='prose prose-sm sm:prose-base lg:prose-lg prose-headings:text-white prose-p:text-gray-300 max-w-none break-words' dangerouslySetInnerHTML={{ __html: projectDetail.detail }} />
       </div>
+      <Footer />
     </>
   )
 }
