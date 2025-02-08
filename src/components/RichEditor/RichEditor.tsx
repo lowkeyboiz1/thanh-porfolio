@@ -30,7 +30,7 @@ interface RichEditorProps {
 }
 
 const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
-  const extensions = [
+  const extensions: any = [
     Underline,
     BulletList,
     ListItem,
