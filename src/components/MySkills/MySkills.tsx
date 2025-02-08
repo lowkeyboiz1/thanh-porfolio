@@ -39,7 +39,7 @@ const MySkills = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className='gradient-text text-4xl font-bold xl:text-6xl'
+            className='gradient-text py-1 text-4xl font-bold xl:text-6xl'
           >
             My Skills
           </motion.div>

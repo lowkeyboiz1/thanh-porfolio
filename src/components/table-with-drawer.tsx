@@ -41,6 +41,7 @@ interface Item {
     fileId: string
   }
   detail: string
+  meta: string
 }
 
 const ITEMS_PER_PAGE = 5
@@ -70,7 +71,8 @@ export default function TableWithDrawer() {
     year: '',
     scopeOfWork: '',
     image_review: '',
-    detail: ''
+    detail: '',
+    meta: ''
   })
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,7 +140,8 @@ export default function TableWithDrawer() {
       year: '',
       scopeOfWork: '',
       image_review: '',
-      detail: ''
+      detail: '',
+      meta: ''
     }
 
     // Title validation
@@ -183,6 +186,10 @@ export default function TableWithDrawer() {
       newErrors.detail = 'Detail is required'
     }
 
+    if (!item.meta?.trim()) {
+      newErrors.meta = 'Meta is required'
+    }
+
     // Image validation
     if (!item.image_review && !selectedFileImage) {
       newErrors.image_review = 'Image is required'
@@ -204,6 +211,7 @@ export default function TableWithDrawer() {
       selectedItem?.year === updatedItem.year &&
       selectedItem?.scopeOfWork === updatedItem.scopeOfWork &&
       selectedItem?.image_review?.url === updatedItem.image_review?.url &&
+      selectedItem?.meta === updatedItem.meta &&
       projectDetail === updatedItem.detail
     ) {
       setIsSheetOpen(false)
@@ -229,8 +237,8 @@ export default function TableWithDrawer() {
         }
       }
 
-      const { title, description, client, category, year, scopeOfWork, _id, image_review, detail } = updatedItem
-      await updateProject({ title, description, client, category, year, scopeOfWork, _id, image_review, detail })
+      const { title, description, client, category, year, scopeOfWork, _id, image_review, detail, meta } = updatedItem
+      await updateProject({ title, description, client, category, year, scopeOfWork, _id, image_review, detail, meta })
       setItems(items.map((item) => (item._id === updatedItem._id ? updatedItem : item)))
       setIsSheetOpen(false)
       toast.success('Item updated successfully')
@@ -331,7 +339,8 @@ export default function TableWithDrawer() {
                   year: formData.get('year') as string,
                   scopeOfWork: formData.get('scopeOfWork') as string,
                   image_review: selectedFileImage,
-                  detail: formData.get('detail') as string
+                  detail: formData.get('detail') as string,
+                  meta: formData.get('meta') as string
                 }
                 handleAdd(newItem)
               }}
@@ -388,6 +397,12 @@ export default function TableWithDrawer() {
                     onChange={() => setErrors((prev) => ({ ...prev, scopeOfWork: '' }))}
                   />
                   {errors.scopeOfWork && <p className='text-sm text-red-500'>{errors.scopeOfWork}</p>}
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='add-meta'>Meta</Label>
+                  <Input id='add-meta' name='meta' placeholder='Enter meta' className={errors.meta ? 'border-red-500' : ''} onChange={() => setErrors((prev) => ({ ...prev, meta: '' }))} />
+                  {errors.meta && <p className='text-sm text-red-500'>{errors.meta}</p>}
                 </div>
 
                 <div className='space-y-2'>
@@ -464,6 +479,7 @@ export default function TableWithDrawer() {
             <TableHead>Category</TableHead>
             <TableHead>Year</TableHead>
             <TableHead>Scope of Work</TableHead>
+            <TableHead>Meta</TableHead>
             <TableHead>Image</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -471,7 +487,7 @@ export default function TableWithDrawer() {
         <TableBody>
           {isFetching ? (
             <TableRow>
-              <TableCell colSpan={8} className='text-center'>
+              <TableCell colSpan={9} className='text-center'>
                 <Loader2 className='mx-auto h-6 w-6 animate-spin' />
               </TableCell>
             </TableRow>
@@ -484,6 +500,7 @@ export default function TableWithDrawer() {
                 <TableCell>{item.category}</TableCell>
                 <TableCell>{item.year}</TableCell>
                 <TableCell>{item.scopeOfWork}</TableCell>
+                <TableCell>{item.meta}</TableCell>
                 <TableCell>
                   <div className='size-[100px] overflow-hidden rounded-lg'>
                     <Image src={item?.image_review?.url || ''} alt='Project Image' width={300} height={300} className='size-full object-cover' />
@@ -525,7 +542,8 @@ export default function TableWithDrawer() {
                                   category: formData.get('category') as string,
                                   year: formData.get('year') as string,
                                   scopeOfWork: formData.get('scopeOfWork') as string,
-                                  detail: formData.get('detail') as string
+                                  detail: formData.get('detail') as string,
+                                  meta: formData.get('meta') as string
                                 }
                                 handleUpdate(updatedItem)
                               }}
@@ -601,6 +619,18 @@ export default function TableWithDrawer() {
                                     onChange={() => setErrors((prev) => ({ ...prev, scopeOfWork: '' }))}
                                   />
                                   {errors.scopeOfWork && <p className='text-sm text-red-500'>{errors.scopeOfWork}</p>}
+                                </div>
+
+                                <div>
+                                  <Label htmlFor='meta'>Meta</Label>
+                                  <Input
+                                    id='meta'
+                                    name='meta'
+                                    defaultValue={selectedItem.meta}
+                                    className={errors.meta ? 'border-red-500' : ''}
+                                    onChange={() => setErrors((prev) => ({ ...prev, meta: '' }))}
+                                  />
+                                  {errors.meta && <p className='text-sm text-red-500'>{errors.meta}</p>}
                                 </div>
 
                                 <div>

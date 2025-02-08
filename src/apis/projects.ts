@@ -27,7 +27,7 @@ export const createProject = async (project: IProjectPayload) => {
 }
 
 export const updateProject = async (
-  project: IProjectPayload & { _id: string; image_review?: { url: string; fileId: string }; client: string; category: string; year: string; scopeOfWork: string }
+  project: IProjectPayload & { _id: string; image_review?: { url: string; fileId: string }; client: string; category: string; year: string; scopeOfWork: string; meta: string }
 ) => {
   const response = await fetch('/api/projects', {
     method: 'PUT',

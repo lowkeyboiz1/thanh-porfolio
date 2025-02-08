@@ -7,7 +7,7 @@ export async function generateMetadata({ params }: { params: any }) {
     const project = await getProjectDetail(slug)
     console.log({ project })
     return {
-      title: `${await project.title} | Tran Quang Thanh`,
+      title: `${await project.meta} | Tran Quang Thanh`,
       description: await project.description
     }
   } catch (error) {
