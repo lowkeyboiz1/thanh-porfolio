@@ -2,7 +2,6 @@
 import { Tool } from '@/components/RichEditor'
 import BulletList from '@tiptap/extension-bullet-list'
 import Color from '@tiptap/extension-color'
-import Document from '@tiptap/extension-document'
 import FontFamily from '@tiptap/extension-font-family'
 import Heading from '@tiptap/extension-heading'
 import Image from '@tiptap/extension-image'
@@ -125,7 +124,6 @@ const RichEditor: React.FC<RichEditorProps> = ({ value, onChange }) => {
     TextAlign.configure({
       types: ['heading', 'paragraph']
     }),
-    Document,
     Paragraph.configure({
       HTMLAttributes: {
         class: 'min-h-[1.5em]' // Add minimum height for empty paragraphs

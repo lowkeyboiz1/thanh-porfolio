@@ -51,8 +51,8 @@ const Hero = () => {
   }
 
   return (
-    <div className='grid w-full justify-center py-14 page lg:grid-cols-2 2xl:py-28' onMouseEnter={handleMouseOver} onMouseLeave={handleMouseLeave}>
-      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }} className='flex flex-col'>
+    <div className='grid w-full justify-center py-14 page lg:grid-cols-3 2xl:py-28' onMouseEnter={handleMouseOver} onMouseLeave={handleMouseLeave}>
+      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }} className='col-span-2 flex flex-col'>
         <div className='flex flex-col gap-2'>
           <motion.p {...fadeInUpAnimation} transition={{ ...fadeInUpAnimation.transition, delay: 0.2 }} className='mb-2 text-lg font-medium text-blue-500 sm:text-xl'>
             Hi, my name is
@@ -64,7 +64,7 @@ const Hero = () => {
         </div>
 
         <motion.span {...fadeInUpAnimation} transition={{ ...fadeInUpAnimation.transition, delay: 0.6 }} className='mb-8 font-mono text-xl text-gray-400 sm:text-2xl md:text-3xl'>
-          I&apos;m a <TextUnderline delay={0.8} text='videographer' /> and <TextUnderline delay={1} text='video editor' /> based in Ho Chi Minh City.
+          I&apos;m a <TextUnderline delay={0.8} text='videographer' /> and <TextUnderline delay={1} text='video editor' /> <br /> based in Ho Chi Minh City.
         </motion.span>
 
         <motion.div {...fadeInUpAnimation} transition={{ ...fadeInUpAnimation.transition, delay: 0.8, duration: 0.5 }} className='flex flex-col gap-4'>
