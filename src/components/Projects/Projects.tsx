@@ -41,7 +41,7 @@ const Projects = () => {
     stiffness: 400
   })
 
-  const x = useTransform(smoothProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 50}%` : `-${projects.length * 40}%`])
+  const x = useTransform(smoothProgress, [0, 1], ['0%', isMobile ? `-${projects.length * 60}%` : `-${projects.length * 47}%`])
 
   return (
     <section id='projects' ref={targetRef} className='relative h-[400vh] w-full page'>

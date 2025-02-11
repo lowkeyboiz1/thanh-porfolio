@@ -64,7 +64,7 @@ const Hero = () => {
         </div>
 
         <motion.span {...fadeInUpAnimation} transition={{ ...fadeInUpAnimation.transition, delay: 0.6 }} className='mb-8 font-mono text-xl text-gray-400 sm:text-2xl md:text-3xl'>
-          I&apos;m a <TextUnderline delay={0.8} text='videographer' /> and <TextUnderline delay={1} text='video editor' /> <br className='hidden md:block' /> based in Ho Chi Minh City.
+          I&apos;m a <TextUnderline delay={0.8} text='visual storyteller' /> <br className='hidden md:block' /> based in Ho Chi Minh City.
         </motion.span>
 
         <motion.div {...fadeInUpAnimation} transition={{ ...fadeInUpAnimation.transition, delay: 0.8, duration: 0.5 }} className='flex flex-col gap-4'>

@@ -9,7 +9,7 @@ import { deleteFile } from '@/lib/imagekit'
 
 export async function GET() {
   try {
-    const projects = await db.collection(COLLECTION_PROJECTS_NAME).find().toArray()
+    const projects = await db.collection(COLLECTION_PROJECTS_NAME).find().sort({ createdAt: -1 }).toArray()
     return NextResponse.json(projects)
   } catch (error) {
     console.error('Error fetching projects:', error)
