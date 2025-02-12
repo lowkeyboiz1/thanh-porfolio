@@ -11,14 +11,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const userToken = request.cookies.get('user')?.value
-    if (!userToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-    const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_SECRET_KEY!)
-    const verifiedUser = await jose.jwtVerify(userToken, secret)
+    const emailAdmin = process.env.NEXT_PUBLIC_SECRET_GMAIL_ADMIN2
 
-    const user = await db.collection(COLLECTION_USER_NAME).findOne({ email: verifiedUser.payload.email })
+    const user = await db.collection(COLLECTION_USER_NAME).findOne({ email: emailAdmin })
 
     const projects = await db.collection(COLLECTION_PROJECTS_NAME).find().toArray()
     const orderProjectIds = user?.orderProjectIds.map((id: any) => id.toString())
@@ -83,8 +78,8 @@ export async function POST(request: NextRequest) {
     if (!result.insertedId) {
       throw new DatabaseError('Failed to insert document')
     }
-
-    const user = await db.collection(COLLECTION_USER_NAME).findOne({ email: verifiedUser.payload.email })
+    const emailAdmin = process.env.NEXT_PUBLIC_SECRET_GMAIL_ADMIN2
+    const user = await db.collection(COLLECTION_USER_NAME).findOne({ email: emailAdmin })
     const orderProjectIds = user?.orderProjectIds || []
     console.log({ user, orderProjectIds })
     await db.collection(COLLECTION_USER_NAME).updateOne(

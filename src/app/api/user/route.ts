@@ -35,16 +35,8 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const payload = await request.json()
-    const userToken = request.cookies.get('user')?.value
-
-    if (!userToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_SECRET_KEY!)
-    const verifiedUser = await jose.jwtVerify(userToken, secret)
-    const userFromToken = verifiedUser.payload
-    const result = await db.collection(COLLECTION_USER_NAME).updateOne({ email: userFromToken.email }, { $set: payload })
+    const emailAdmin = process.env.NEXT_PUBLIC_SECRET_GMAIL_ADMIN2
+    const result = await db.collection(COLLECTION_USER_NAME).updateOne({ email: emailAdmin }, { $set: payload })
 
     if (result.matchedCount === 0) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
