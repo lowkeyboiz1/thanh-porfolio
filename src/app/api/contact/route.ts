@@ -1,9 +1,9 @@
 import { db } from '@/lib/db'
 import { DatabaseError, ValidationError } from '@/lib/errors'
+import { COLLECTION_CONTACTS_NAME } from '@/utils/constans'
 import { ObjectId } from 'mongodb'
 import { NextRequest, NextResponse } from 'next/server'
 
-const COLLECTION_CONTACTS_NAME = 'contacts'
 const MAX_MESSAGES_PER_DAY = 3
 const MESSAGE_COOLDOWN_MS = 60 * 1000 * 10 // 10 phút cooldown
 

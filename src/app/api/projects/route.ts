@@ -1,16 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { validateProjectPayload } from '@/validators/projectValidator'
-import { ValidationError, DatabaseError } from '@/lib/errors'
-import { ObjectId } from 'mongodb'
-import { createSlug } from '@/utils/createSlug'
-import { COLLECTION_PROJECTS_NAME } from '@/utils/constans'
+import { DatabaseError, ValidationError } from '@/lib/errors'
 import { deleteFile } from '@/lib/imagekit'
+import { COLLECTION_PROJECTS_NAME, COLLECTION_USER_NAME } from '@/utils/constans'
+import { createSlug } from '@/utils/createSlug'
+import { mapOrder } from '@/utils/mapOrder'
+import { validateProjectPayload } from '@/validators/projectValidator'
+import * as jose from 'jose'
+import { ObjectId } from 'mongodb'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const projects = await db.collection(COLLECTION_PROJECTS_NAME).find().sort({ createdAt: -1 }).toArray()
-    return NextResponse.json(projects)
+    const userToken = request.cookies.get('user')?.value
+    if (!userToken) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_SECRET_KEY!)
+    const verifiedUser = await jose.jwtVerify(userToken, secret)
+
+    const user = await db.collection(COLLECTION_USER_NAME).findOne({ email: verifiedUser.payload.email })
+
+    const projects = await db.collection(COLLECTION_PROJECTS_NAME).find().toArray()
+    const orderProjectIds = user?.orderProjectIds.map((id: any) => id.toString())
+    const orderedProjects = mapOrder(projects, orderProjectIds || [], '_id')
+
+    return NextResponse.json(orderedProjects)
   } catch (error) {
     console.error('Error fetching projects:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
@@ -21,6 +35,13 @@ export async function POST(request: NextRequest) {
   try {
     const payload = await request.json()
     const { title, description } = payload
+    const userToken = request.cookies.get('user')?.value
+    if (!userToken) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_SECRET_KEY!)
+    const verifiedUser = await jose.jwtVerify(userToken, secret)
+
     // Early exit if payload is missing required fields
     if (!payload) {
       return NextResponse.json({ error: 'Missing request payload' }, { status: 400 })
@@ -62,6 +83,18 @@ export async function POST(request: NextRequest) {
     if (!result.insertedId) {
       throw new DatabaseError('Failed to insert document')
     }
+
+    const user = await db.collection(COLLECTION_USER_NAME).findOne({ email: verifiedUser.payload.email })
+    const orderProjectIds = user?.orderProjectIds || []
+    console.log({ user, orderProjectIds })
+    await db.collection(COLLECTION_USER_NAME).updateOne(
+      { email: user?.email },
+      {
+        $set: {
+          orderProjectIds: [result.insertedId, ...orderProjectIds]
+        }
+      }
+    )
 
     return NextResponse.json({ _id: result.insertedId, ...data }, { status: 201 })
   } catch (error) {

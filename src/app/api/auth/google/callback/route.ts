@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import * as jose from 'jose'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/errors'
+import { db } from '@/lib/db'
+import { COLLECTION_USER_NAME } from '@/utils/constans'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -11,8 +13,6 @@ export async function GET(request: Request) {
   if (!code) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
-
-  console.log({ code })
 
   try {
     // Exchange code lấy về từ Google để lấy access token
@@ -40,6 +40,9 @@ export async function GET(request: Request) {
     })
 
     const userData = await userResponse.json()
+
+    await db.collection(COLLECTION_USER_NAME).insertOne(userData)
+
     if (!validGmails.includes(userData.email)) {
       throw new ApiError('Unauthorized: Access denied')
     }
@@ -54,7 +57,6 @@ export async function GET(request: Request) {
       sameSite: 'lax',
       maxAge: 86400 // 1 day
     })
-    console.log({ token, response })
     return response
   } catch (error) {
     console.error('Google auth error:', error)

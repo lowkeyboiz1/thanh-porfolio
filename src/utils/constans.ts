@@ -3,3 +3,7 @@ export const typeOfProject = {
 }
 
 export const COLLECTION_PROJECTS_NAME = 'projects'
+
+export const COLLECTION_CONTACTS_NAME = 'contacts'
+
+export const COLLECTION_USER_NAME = 'user'
