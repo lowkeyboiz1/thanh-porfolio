@@ -67,7 +67,7 @@ export default function Home() {
       </div>
       <Education />
       <MySkills />
-      <WorkExperience />
+      {/* <WorkExperience /> */}
       <Projects />
       <Contact />
       <Footer />
